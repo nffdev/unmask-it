@@ -4,13 +4,13 @@ const cn = (...classes) => {
   return classes.filter(Boolean).join(' ')
 }
 
-export function Upload() {
+export function Upload({ onUploadSuccess }) {
   const [isDragging, setIsDragging] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState(null)
   const [uploadSuccess, setUploadSuccess] = useState(null)
 
-  const onUploadSuccess = typeof window !== 'undefined' && window.onUploadSuccess ? window.onUploadSuccess : () => {};
+  
 
   async function handleUpload(files) {
     setUploading(true);
@@ -44,7 +44,7 @@ export function Upload() {
         date: new Date().toISOString()
       });
       localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
-      onUploadSuccess(data);
+      if (onUploadSuccess) onUploadSuccess(data);
     } catch (err) {
       setUploadError(err.message);
     } finally {
