@@ -21,9 +21,17 @@ export function Upload() {
       formData.append('file', files[0]); 
       const res = await fetch('http://localhost:8080/api/scan', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
-      if (!res.ok) throw new Error('Error uploading file.');
+      if (!res.ok) {
+        let errorMsg = 'Error uploading file.';
+        try {
+          const errData = await res.json();
+          if (errData.error) errorMsg = errData.error;
+        } catch {}
+        setUploadError(errorMsg);
+        return;
+      }
       const data = await res.json();
       setUploadSuccess('File uploaded and scanned !');
       const uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
@@ -57,6 +65,14 @@ export function Upload() {
     e.preventDefault();
     setIsDragging(false);
     const files = e.dataTransfer.files;
+    if (!files || files.length === 0) return;
+    setUploadError(null);
+    setUploadSuccess(null);
+    const file = files[0];
+    if (file.name.toLowerCase().endsWith('.exe') && file.size > 50 * 1024 * 1024) {
+      setUploadError('EXE files larger than 50MB are not allowed.');
+      return;
+    }
     if (files && files.length > 0) {
       await handleUpload(files);
     }
@@ -102,6 +118,11 @@ export function Upload() {
           multiple
           onChange={async (e) => {
             if (e.target.files && e.target.files.length > 0) {
+              const file = e.target.files[0];
+              if (file.name.toLowerCase().endsWith('.exe') && file.size > 50 * 1024 * 1024) {
+                setUploadError('EXE files larger than 50MB are not allowed.');
+                return;
+              }
               await handleUpload(e.target.files);
             }
           }}
