@@ -1,7 +1,31 @@
-import { useState } from "react"
+import { useState, useEffect, forwardRef, useImperativeHandle } from "react"
 
-export function UploadedFiles() {
+export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
   const [files, setFiles] = useState([])
+
+  async function fetchFiles() {
+    try {
+      const res = await fetch('http://localhost:8080/api/scan');
+      const data = await res.json();
+      setFiles(data.map(scan => ({
+        id: scan._id,
+        name: scan.originalname,
+        size: scan.size + ' bytes',
+        type: scan.mimetype,
+        status: scan.result === 'clean' ? 'completed' : scan.result
+      })));
+    } catch (e) {
+      setFiles([]);
+    }
+  }
+
+  useEffect(() => {
+    fetchFiles();
+  }, []);
+
+  useImperativeHandle(ref, () => ({
+    refresh: fetchFiles
+  }));
 
   return (
     <div className="bg-zinc-800 rounded-2xl p-6 border border-zinc-700/50">
@@ -97,4 +121,4 @@ export function UploadedFiles() {
       )}
     </div>
   )
-}
+})

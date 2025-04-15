@@ -3,8 +3,11 @@ import { FileAnalysis } from "@/components/file-analysis"
 import { UploadedFiles } from "@/components/uploaded-files"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
+import { useRef } from "react"
 
 export default function Home() {
+  const uploadedFilesRef = useRef();
+
   return (
     <div className="min-h-screen bg-black text-gray-300">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -39,9 +42,9 @@ export default function Home() {
               </button>
             </div>
 
-            <Upload />
+            <Upload onUploadSuccess={() => uploadedFilesRef.current?.refresh()} />
             <FileAnalysis />
-            <UploadedFiles />
+            <UploadedFiles ref={uploadedFilesRef} />
           </div>
         </main>
 
