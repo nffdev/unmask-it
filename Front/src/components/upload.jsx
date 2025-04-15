@@ -26,6 +26,16 @@ export function Upload() {
       if (!res.ok) throw new Error('Error uploading file.');
       const data = await res.json();
       setUploadSuccess('File uploaded and scanned !');
+      const uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
+      uploadedFiles.unshift({
+        id: data.id,
+        name: files[0].name,
+        size: files[0].size + ' bytes',
+        type: files[0].type,
+        status: data.result || 'completed',
+        date: new Date().toISOString()
+      });
+      localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
       onUploadSuccess(data);
     } catch (err) {
       setUploadError(err.message);

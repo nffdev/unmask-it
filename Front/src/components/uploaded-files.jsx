@@ -5,15 +5,8 @@ export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
 
   async function fetchFiles() {
     try {
-      const res = await fetch('http://localhost:8080/api/scan');
-      const data = await res.json();
-      setFiles(data.map(scan => ({
-        id: scan._id,
-        name: scan.originalname,
-        size: scan.size + ' bytes',
-        type: scan.mimetype,
-        status: scan.result === 'clean' ? 'completed' : scan.result
-      })));
+      const data = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
+      setFiles(data);
     } catch (e) {
       setFiles([]);
     }
