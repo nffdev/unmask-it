@@ -6,6 +6,33 @@ const cn = (...classes) => {
 
 export function Upload() {
   const [isDragging, setIsDragging] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState(null)
+  const [uploadSuccess, setUploadSuccess] = useState(null)
+
+  const onUploadSuccess = typeof window !== 'undefined' && window.onUploadSuccess ? window.onUploadSuccess : () => {};
+
+  async function handleUpload(files) {
+    setUploading(true);
+    setUploadError(null);
+    setUploadSuccess(null);
+    try {
+      const formData = new FormData();
+      formData.append('file', files[0]); 
+      const res = await fetch('http://localhost:8080/api/scan', {
+        method: 'POST',
+        body: formData
+      });
+      if (!res.ok) throw new Error('Error uploading file.');
+      const data = await res.json();
+      setUploadSuccess('File uploaded and scanned !');
+      onUploadSuccess(data);
+    } catch (err) {
+      setUploadError(err.message);
+    } finally {
+      setUploading(false);
+    }
+  }
 
   const handleDragOver = (e) => {
     e.preventDefault()
@@ -16,9 +43,13 @@ export function Upload() {
     setIsDragging(false)
   }
 
-  const handleDrop = (e) => {
-    e.preventDefault()
-    setIsDragging(false)
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      await handleUpload(files);
+    }
   }
 
   return (
@@ -54,7 +85,17 @@ export function Upload() {
         </div>
         <h3 className="text-xl font-medium text-white mb-2">Upload Files</h3>
         <p className="text-gray-400">Drag & drop or click to select</p>
-        <input id="file-upload" type="file" className="hidden" multiple />
+        <input
+          id="file-upload"
+          type="file"
+          className="hidden"
+          multiple
+          onChange={async (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+              await handleUpload(e.target.files);
+            }
+          }}
+        />
       </div>
     </div>
   )
