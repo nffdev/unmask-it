@@ -22,10 +22,12 @@ const upload = multer({ storage });
 
 router.post('/', upload.single('file'), async (req, res, next) => {
   const file = req.file;
-  if (file && file.originalname.toLowerCase().endsWith('.exe') && file.size > 50 * 1024 * 1024) {
+  if (!file || !file.originalname.toLowerCase().endsWith('.exe')) {
+    return res.status(400).json({ error: 'Only .exe files are allowed.' });
+  }
+  if (file.size > 50 * 1024 * 1024) {
     return res.status(400).json({ error: 'EXE files larger than 50MB are not allowed.' });
   }
-  
   return scanFile(req, res, next);
 });
 router.get('/:id', getScanResult);

@@ -17,6 +17,10 @@ export function Upload({ onUploadSuccess }) {
     setUploadError(null);
     setUploadSuccess(null);
     try {
+      if (!files[0].name.toLowerCase().endsWith('.exe')) {
+        setUploadError('Only .exe files are allowed.');
+        return;
+      }
       const formData = new FormData();
       formData.append('file', files[0]); 
       const res = await fetch('http://localhost:8080/api/scan', {
@@ -69,7 +73,11 @@ export function Upload({ onUploadSuccess }) {
     setUploadError(null);
     setUploadSuccess(null);
     const file = files[0];
-    if (file.name.toLowerCase().endsWith('.exe') && file.size > 50 * 1024 * 1024) {
+    if (!file.name.toLowerCase().endsWith('.exe')) {
+      setUploadError('Only .exe files are allowed.');
+      return;
+    }
+    if (file.size > 50 * 1024 * 1024) {
       setUploadError('EXE files larger than 50MB are not allowed.');
       return;
     }
@@ -119,7 +127,11 @@ export function Upload({ onUploadSuccess }) {
           onChange={async (e) => {
             if (e.target.files && e.target.files.length > 0) {
               const file = e.target.files[0];
-              if (file.name.toLowerCase().endsWith('.exe') && file.size > 50 * 1024 * 1024) {
+              if (!file.name.toLowerCase().endsWith('.exe')) {
+                setUploadError('Only .exe files are allowed.');
+                return;
+              }
+              if (file.size > 50 * 1024 * 1024) {
                 setUploadError('EXE files larger than 50MB are not allowed.');
                 return;
               }
