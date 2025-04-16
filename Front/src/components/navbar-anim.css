@@ -1,0 +1,15 @@
+.nav-link {
+  position: relative;
+  padding: 0.25em 1em;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 500;
+  background: none;
+  z-index: 1;
+  transition: color 0.2s;
+}
+
+.nav-slider-bg {
+  pointer-events: none;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+}

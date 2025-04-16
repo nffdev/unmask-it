@@ -67,7 +67,7 @@ export default function AboutPage() {
                   "Control flow graph visualization",
                   "Support for multiple executable file formats",
                 ].map((item, index) => (
-                  <li key={index} className="flex items-start bg-zinc-700/20 p-3 rounded-xl">
+                  <li key={index} className="flex items-start bg-zinc-700/20 p-3 rounded-xl hover:bg-zinc-700/30 transition-colors">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="18"

@@ -1,6 +1,30 @@
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom";
+import "./navbar-anim.css";
+
+import { useRef, useEffect, useState } from "react";
 
 export function Navigation() {
+  const location = useLocation();
+  const navLinks = [
+    { to: "/", label: "Home" },
+    { to: "/about", label: "About" },
+    { to: "/supported", label: "Supported Software" },
+    { to: "/status", label: "Status" },
+  ];
+  const linkRefs = useRef([]);
+  const [sliderStyle, setSliderStyle] = useState({ left: 0, width: 0 });
+  const [hoveredIdx, setHoveredIdx] = useState(null);
+
+  useEffect(() => {
+    const idx = hoveredIdx !== null ? hoveredIdx : navLinks.findIndex(l => l.to === location.pathname);
+    const node = linkRefs.current[idx];
+    if (node) {
+      const { left, width } = node.getBoundingClientRect();
+      const parentLeft = node.parentNode.parentNode.getBoundingClientRect().left;
+      setSliderStyle({ left: left - parentLeft, width });
+    }
+  }, [location.pathname, hoveredIdx]);
+
   return (
     <header className="flex justify-between items-center py-4">
       <Link to="/" className="text-xl font-bold text-white flex items-center">
@@ -25,31 +49,49 @@ export function Navigation() {
         </svg>
         Unmask It
       </Link>
-
       <nav>
-        <ul className="flex space-x-6">
-          <li>
-            <Link to="/" className="hover:text-indigo-400 transition-colors">
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/about" className="hover:text-indigo-400 transition-colors">
-              About
-            </Link>
-          </li>
-          <li>
-            <Link to="/supported" className="hover:text-indigo-400 transition-colors">
-              Supported Software
-            </Link>
-          </li>
-          <li>
-            <Link to="/status" className="hover:text-indigo-400 transition-colors">
-              Status
-            </Link>
-          </li>
-        </ul>
+        <div style={{ position: "relative" }}>
+          <ul className="flex space-x-6 relative">
+            <div
+              className="nav-slider-bg"
+              style={{
+                position: "absolute",
+                top: 0,
+                left: sliderStyle.left,
+                width: sliderStyle.width,
+                height: "100%",
+                borderRadius: "8px",
+                background: "#434a56",
+                transition: "left 0.35s cubic-bezier(0.4,0,0.2,1), width 0.35s cubic-bezier(0.4,0,0.2,1)",
+                zIndex: 0,
+              }}
+            />
+            {navLinks.map((l, i) => (
+              <li key={l.to} style={{ position: "relative", zIndex: 1 }}>
+                <Link
+                  to={l.to}
+                  className={`nav-link${location.pathname === l.to ? " active" : ""}`}
+                  ref={el => (linkRefs.current[i] = el)}
+                  style={{
+                    padding: "0.25em 1em",
+                    borderRadius: 8,
+                    fontWeight: 500,
+                    color: "#fff",
+                    background: "none",
+                    transition: "color 0.2s",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                  onMouseEnter={() => setHoveredIdx(i)}
+                  onMouseLeave={() => setHoveredIdx(null)}
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </nav>
     </header>
-  )
+  );
 }
