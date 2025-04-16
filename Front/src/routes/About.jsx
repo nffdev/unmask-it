@@ -32,7 +32,7 @@ export default function AboutPage() {
                 Our Mission
               </h2>
               <p className="text-gray-300 leading-relaxed">
-                Unmask It is a platform dedicated to software analysis and reverse engineering. Our goal is to provide
+                <span className="font-bold">Unmask It</span> is a platform dedicated to software analysis and reverse engineering. Our goal is to provide
                 security researchers, developers, and students with powerful tools to understand the internal workings
                 of applications.
               </p>
@@ -60,8 +60,8 @@ export default function AboutPage() {
               </h2>
               <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
                 {[
-                  "Disassembly of binaries for multiple architectures (x86, x64, ARM, MIPS)",
-                  "Decompilation to high-level languages (C, C++, Java)",
+                  "Disassembly of binaries for multiple architectures (x86, x64, .NET IL)",
+                  "Decompilation to high-level languages (C, C++, ...)",
                   "Static and dynamic code analysis",
                   "Vulnerability and code pattern detection",
                   "Control flow graph visualization",

@@ -34,8 +34,11 @@ export default function SupportedPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
                   { name: "Windows Executables (EXE)", icon: "windows" },
+                  { name: "Windows Dynamic Link Libraries (DLL)", icon: "windows" },
                   { name: ".NET Files (EXE, DLL)", icon: "hash" },
                   { name: "Python Scripts (PY, PYC)", icon: "code" },
+                  { name: "JavaScript Files (EXE, JS)", icon: "code" },
+                  { name: "Go Files (EXE, GO)", icon: "code" },
                 ].map((item, index) => (
                   <div
                     key={index}
@@ -93,6 +96,7 @@ export default function SupportedPage() {
                   "x86 (32-bit)",
                   "x86-64 (64-bit)",
                   ".NET IL",
+
                 ].map((item, index) => (
                   <div key={index} className="bg-zinc-700/20 p-4 rounded-xl hover:bg-zinc-700/30 transition-colors">
                     {item}
