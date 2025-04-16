@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import "./navbar-anim.css";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useLayoutEffect, useEffect, useState } from "react";
 
 export function Navigation() {
   const location = useLocation();
@@ -15,15 +15,20 @@ export function Navigation() {
   const [sliderStyle, setSliderStyle] = useState({ left: 0, width: 0 });
   const [hoveredIdx, setHoveredIdx] = useState(null);
 
-  useEffect(() => {
-    const idx = hoveredIdx !== null ? hoveredIdx : navLinks.findIndex(l => l.to === location.pathname);
-    const node = linkRefs.current[idx];
-    if (node) {
-      const { left, width } = node.getBoundingClientRect();
-      const parentLeft = node.parentNode.parentNode.getBoundingClientRect().left;
-      setSliderStyle({ left: left - parentLeft, width });
+  useLayoutEffect(() => {
+    function updateSlider() {
+      const idx = hoveredIdx !== null ? hoveredIdx : navLinks.findIndex(l => l.to === location.pathname);
+      const node = linkRefs.current[idx];
+      if (node) {
+        const { left, width } = node.getBoundingClientRect();
+        const parentLeft = node.parentNode.parentNode.getBoundingClientRect().left;
+        setSliderStyle({ left: left - parentLeft, width });
+      }
     }
-  }, [location.pathname, hoveredIdx]);
+    updateSlider();
+    window.addEventListener('resize', updateSlider);
+    return () => window.removeEventListener('resize', updateSlider);
+  }, [location.pathname, hoveredIdx, navLinks.length]);
 
   return (
     <header className="flex justify-between items-center py-4">
