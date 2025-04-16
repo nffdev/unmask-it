@@ -51,7 +51,7 @@ export function Navigation() {
       </Link>
       <nav>
         <div style={{ position: "relative" }}>
-          <ul className="flex space-x-6 relative">
+          <ul className="flex space-x-6 items-center h-[44px] relative">
             <div
               className="nav-slider-bg"
               style={{
@@ -59,7 +59,6 @@ export function Navigation() {
                 top: 0,
                 left: sliderStyle.left,
                 width: sliderStyle.width,
-                height: "100%",
                 borderRadius: "8px",
                 background: "#434a56",
                 transition: "left 0.35s cubic-bezier(0.4,0,0.2,1), width 0.35s cubic-bezier(0.4,0,0.2,1)",

@@ -12,4 +12,13 @@
 .nav-slider-bg {
   pointer-events: none;
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+  height: 44px;
+  background: rgba(67, 74, 86, 0.95);
+  top: 0;
 }
+
+.nav-link {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
