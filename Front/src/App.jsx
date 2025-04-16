@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import useRouter from "@/lib/hooks/useRouter";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function App() {
   const routes = useRouter();
@@ -12,6 +13,7 @@ export default function App() {
         ))}
         <Route path="*" element={<h1>404: Not found</h1>} />
       </Routes>
+      <Toaster />
     </BrowserRouter>
   );
 }

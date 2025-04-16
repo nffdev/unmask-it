@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { toast } from "sonner"
 
 export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
   const [files, setFiles] = useState([])
@@ -17,8 +18,12 @@ export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
     try {
       const data = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
       setFiles(data);
+      if (data.length > 0) {
+        toast.info(`${data.length} file(s) loaded`);
+      }
     } catch (e) {
       setFiles([]);
+      toast.error('Failed to load uploaded files.');
     }
   }
 

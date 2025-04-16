@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { toast } from "sonner"
 
 const cn = (...classes) => {
   return classes.filter(Boolean).join(' ')
@@ -19,6 +20,7 @@ export function Upload({ onUploadSuccess }) {
     try {
       if (!files[0].name.toLowerCase().endsWith('.exe')) {
         setUploadError('Only .exe files are allowed.');
+        toast.error('Only .exe files are allowed.');
         return;
       }
       const formData = new FormData();
@@ -34,10 +36,12 @@ export function Upload({ onUploadSuccess }) {
           if (errData.error) errorMsg = errData.error;
         } catch {}
         setUploadError(errorMsg);
+        toast.error(errorMsg);
         return;
       }
       const data = await res.json();
       setUploadSuccess('File uploaded and scanned !');
+      toast.success('File uploaded and scanned successfully!');
       const uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
       uploadedFiles.unshift({
         id: data.id,
@@ -51,6 +55,7 @@ export function Upload({ onUploadSuccess }) {
       if (onUploadSuccess) onUploadSuccess(data);
     } catch (err) {
       setUploadError(err.message);
+      toast.error(err.message);
     } finally {
       setUploading(false);
     }
@@ -75,10 +80,12 @@ export function Upload({ onUploadSuccess }) {
     const file = files[0];
     if (!file.name.toLowerCase().endsWith('.exe')) {
       setUploadError('Only .exe files are allowed.');
+      toast.error('Only .exe files are allowed.');
       return;
     }
     if (file.size > 50 * 1024 * 1024) {
       setUploadError('EXE files larger than 50MB are not allowed.');
+      toast.error('EXE files larger than 50MB are not allowed.');
       return;
     }
     if (files && files.length > 0) {
@@ -129,10 +136,12 @@ export function Upload({ onUploadSuccess }) {
               const file = e.target.files[0];
               if (!file.name.toLowerCase().endsWith('.exe')) {
                 setUploadError('Only .exe files are allowed.');
+                toast.error('Only .exe files are allowed.');
                 return;
               }
               if (file.size > 50 * 1024 * 1024) {
                 setUploadError('EXE files larger than 50MB are not allowed.');
+                toast.error('EXE files larger than 50MB are not allowed.');
                 return;
               }
               await handleUpload(e.target.files);
