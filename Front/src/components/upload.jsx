@@ -5,11 +5,41 @@ const cn = (...classes) => {
   return classes.filter(Boolean).join(' ')
 }
 
-export function Upload({ onUploadSuccess }) {
+import { forwardRef, useImperativeHandle } from "react";
+
+export const Upload = forwardRef(function Upload({ onUploadSuccess }, ref) {
   const [isDragging, setIsDragging] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState(null)
   const [uploadSuccess, setUploadSuccess] = useState(null)
+
+  useImperativeHandle(ref, () => ({
+    async uploadFromUrl(url) {
+      setUploading(true);
+      setUploadError(null);
+      setUploadSuccess(null);
+      try {
+        const response = await fetch('http://localhost:8080/api/download', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          toast.error('Failed to download file from URL.');
+          console.log('[uploadFromUrl] backend error:', data.error || 'Failed to scan file from URL.');
+          setUploading(false);
+          return;
+        }
+        toast.success('File downloaded and scanned successfully!');
+        if (onUploadSuccess) onUploadSuccess(data);
+      } catch (err) {
+        toast.error('Failed to download or scan file: ' + err.message);
+      } finally {
+        setUploading(false);
+      }
+    }
+  }));
 
   
 
@@ -151,4 +181,4 @@ export function Upload({ onUploadSuccess }) {
       </div>
     </div>
   )
-}
+});

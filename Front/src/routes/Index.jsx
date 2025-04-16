@@ -3,10 +3,20 @@ import { FileAnalysis } from "@/components/file-analysis"
 import { UploadedFiles } from "@/components/uploaded-files"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 
 export default function Home() {
   const uploadedFilesRef = useRef();
+  const uploadRef = useRef();
+  const [urlDownloadLink, setUrlDownloadLink] = useState("");
+  const [downloading, setDownloading] = useState(false);
+
+  const handleUrlUpload = async () => {
+    if (!urlDownloadLink || !uploadRef.current) return;
+    setDownloading(true);
+    await uploadRef.current.uploadFromUrl(urlDownloadLink);
+    setDownloading(false);
+  };
 
   return (
     <div className="min-h-screen bg-black text-gray-300">
@@ -20,10 +30,16 @@ export default function Home() {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Enter download link (GitHub/Drive/Dropbox)"
+                value={urlDownloadLink}
+                onChange={e => setUrlDownloadLink(e.target.value)}
+                placeholder="Enter download link (GitHub/GoFile/Discord)"
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl py-3 px-4 pr-12 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
               />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 text-white p-2 hover:text-indigo-400 transition-colors">
+              <button
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-white p-2 hover:text-indigo-400 transition-colors disabled:opacity-60"
+                disabled={!urlDownloadLink || downloading}
+                onClick={handleUrlUpload}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -42,7 +58,7 @@ export default function Home() {
               </button>
             </div>
 
-            <Upload onUploadSuccess={() => uploadedFilesRef.current?.refresh()} />
+            <Upload ref={uploadRef} onUploadSuccess={() => uploadedFilesRef.current?.refresh()} />
             <FileAnalysis />
             <UploadedFiles ref={uploadedFilesRef} />
           </div>

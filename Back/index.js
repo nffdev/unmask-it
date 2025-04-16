@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import scanRoutes from './routes/scan.js';
+import downloadRoutes from './routes/download.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/scan', scanRoutes);
+app.use('/api/download', downloadRoutes);
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
