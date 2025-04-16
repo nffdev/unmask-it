@@ -33,15 +33,9 @@ export default function SupportedPage() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
-                  { name: "Windows Executables (EXE, DLL)", icon: "windows" },
-                  { name: "Linux Binaries (ELF)", icon: "linux" },
-                  { name: "macOS Binaries (Mach-O)", icon: "apple" },
-                  { name: "Java Files (JAR, CLASS)", icon: "coffee" },
+                  { name: "Windows Executables (EXE)", icon: "windows" },
                   { name: ".NET Files (EXE, DLL)", icon: "hash" },
-                  { name: "Android (APK, DEX)", icon: "smartphone" },
-                  { name: "iOS (IPA)", icon: "smartphone" },
-                  { name: "WebAssembly (WASM)", icon: "globe" },
-                  { name: "Python Scripts (PYC)", icon: "code" },
+                  { name: "Python Scripts (PY, PYC)", icon: "code" },
                 ].map((item, index) => (
                   <div
                     key={index}
@@ -98,13 +92,6 @@ export default function SupportedPage() {
                 {[
                   "x86 (32-bit)",
                   "x86-64 (64-bit)",
-                  "ARM (32-bit)",
-                  "ARM64 (64-bit)",
-                  "MIPS",
-                  "PowerPC",
-                  "RISC-V",
-                  "WebAssembly",
-                  "JVM Bytecode",
                   ".NET IL",
                 ].map((item, index) => (
                   <div key={index} className="bg-zinc-700/20 p-4 rounded-xl hover:bg-zinc-700/30 transition-colors">
@@ -138,14 +125,10 @@ export default function SupportedPage() {
                 {[
                   "C",
                   "C++",
-                  "Java",
                   "C#",
                   "Python",
                   "JavaScript",
-                  "Go",
-                  "Swift",
-                  "Rust (experimental)",
-                  "Kotlin (experimental)",
+                  "Go (experimental)",
                 ].map((item, index) => (
                   <div key={index} className="bg-zinc-700/20 p-4 rounded-xl hover:bg-zinc-700/30 transition-colors">
                     {item}
