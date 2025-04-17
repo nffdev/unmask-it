@@ -1,0 +1,11 @@
+{
+  "name": "scanner",
+  "version": "1.0.0",
+  "description": "Minimal file scanner module for Unmask-it.",
+  "main": "index.js",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "mime-types": "^2.1.35"
+  }
+}
