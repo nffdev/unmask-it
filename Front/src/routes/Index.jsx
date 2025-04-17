@@ -18,6 +18,7 @@ export default function Home() {
     await uploadRef.current.uploadFromUrl(urlDownloadLink);
     setDownloading(false);
     setRefresh(r => r + 1);
+    uploadedFilesRef.current?.refresh();
   };
 
   return (

@@ -56,6 +56,7 @@ router.post('/', async (req, res) => {
       mimetype: 'application/vnd.microsoft.portable-executable'
     };
     await scanFile(req, res, () => {});
+    if (res.headersSent) return;
     return res.json({
       name: filename,
       size: stats.size,
