@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-export function FileAnalysis() {
+export function FileAnalysis({ refresh }) {
   const [stats, setStats] = useState({
     totalSize: 0,
     avgSize: 0,
@@ -33,7 +33,7 @@ export function FileAnalysis() {
       smallest,
       count: files.length
     });
-  }, []);
+  }, [refresh]);
 
   function formatSize(bytes) {
     if (!bytes || isNaN(bytes)) return '0.00 MB';
