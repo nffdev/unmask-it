@@ -32,6 +32,9 @@ export const Upload = forwardRef(function Upload({ onUploadSuccess }, ref) {
           return;
         }
         toast.success('File downloaded and scanned successfully!');
+        const uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
+        uploadedFiles.unshift(data);
+        localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
         if (onUploadSuccess) onUploadSuccess(data);
       } catch (err) {
         toast.error('Failed to download or scan file: ' + err.message);

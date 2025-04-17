@@ -56,7 +56,13 @@ router.post('/', async (req, res) => {
       mimetype: 'application/vnd.microsoft.portable-executable'
     };
     await scanFile(req, res, () => {});
-    // TODO : delete file after scan
+    return res.json({
+      name: filename,
+      size: stats.size,
+      type: 'exe',
+      status: 'completed',
+      date: Date.now()
+    }); 
   } catch (err) {
     console.log(`[download] Server error: ${err.message}`);
     return res.status(500).json({ error: err.message });
