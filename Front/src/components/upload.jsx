@@ -25,6 +25,7 @@ export const Upload = forwardRef(function Upload({ onUploadSuccess }, ref) {
           body: JSON.stringify({ url })
         });
         const data = await response.json();
+        console.log('[uploadFromUrl] Response data:', data);
         if (!response.ok) {
           toast.error('Failed to download file from URL.');
           console.log('[uploadFromUrl] backend error:', data.error || 'Failed to scan file from URL.');
@@ -34,13 +35,24 @@ export const Upload = forwardRef(function Upload({ onUploadSuccess }, ref) {
         if (!data.id) data.id = Date.now().toString();
         if (!data.date) data.date = new Date().toISOString();
         if (!data.name) data.name = url.split('/').pop() || 'downloaded.exe';
-        if (!data.size) data.size = '0 KB';
+        
+        let fileSize = '0 KB';
+        
+        if (data.size !== undefined && data.size !== null) {
+          const sizeInBytes = typeof data.size === 'number' ? data.size : parseInt(data.size, 10);
+          
+          if (!isNaN(sizeInBytes)) {
+            const sizeInKB = (sizeInBytes / 1024).toFixed(2);
+            fileSize = sizeInKB + ' KB';
+          }
+        }
+        
         if (!data.type) data.type = 'exe';
         
         const fileData = {
           id: data.id,
           name: data.name,
-          size: data.size,
+          size: fileSize,
           type: data.type,
           status: data.status || 'completed',
           date: data.date
@@ -101,7 +113,7 @@ export const Upload = forwardRef(function Upload({ onUploadSuccess }, ref) {
       uploadedFiles.unshift({
         id: data.id,
         name: files[0].name,
-        size: files[0].size + ' bytes',
+        size: (files[0].size / 1024).toFixed(2) + ' KB', 
         type: files[0].type,
         status: data.result || 'completed',
         date: new Date().toISOString()

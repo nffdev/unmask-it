@@ -20,11 +20,18 @@ export async function scanFile(req, res) {
     const { filename, originalname, mimetype, size, path: filePath } = req.file;
     const hash = await calculateFileHash(filePath);
 
+    console.log(`[scanFile] Processing file: ${originalname}, size: ${size} bytes`);
     const scan = new Scan({ filename, originalname, mimetype, size, hash, result: 'clean' });
     await scan.save();
     // TODO : Implement real logic here
 
-    res.status(201).json({ id: scan._id, filename, hash, result: scan.result });
+    res.status(201).json({ 
+      id: scan._id, 
+      filename, 
+      hash, 
+      size: size, 
+      result: scan.result 
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

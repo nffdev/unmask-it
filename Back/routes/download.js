@@ -44,24 +44,21 @@ router.post('/', async (req, res) => {
       fileStream.on('finish', resolve);
     });
     const stats = fs.statSync(tempPath);
+    console.log(`[download] File size: ${stats.size} bytes for ${filename}`);
     if (stats.size > 50 * 1024 * 1024) {
       fs.unlinkSync(tempPath);
       console.log(`[download] Reject: file too large (${stats.size} octets) for ${filename}`);
       return res.status(400).json({ error: 'EXE files larger than 50MB are not allowed.' });
     }
-    req.file = {
-      path: tempPath,
-      originalname: filename,
-      size: stats.size,
-      mimetype: 'application/vnd.microsoft.portable-executable'
-    };
-    await scanFile(req, res, () => {});
-    if (res.headersSent) return;
+    const fileSizeInBytes = parseInt(stats.size, 10);
+    console.log(`[download] File size: ${fileSizeInBytes} bytes (type: ${typeof fileSizeInBytes})`);
+    // TODO : implement scan file
     const fileId = Date.now().toString();
+    
     return res.json({
       id: fileId,
       name: filename,
-      size: `${Math.round(stats.size / 1024)} KB`,
+      size: fileSizeInBytes,
       type: 'exe',
       status: 'completed',
       date: Date.now()
