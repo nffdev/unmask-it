@@ -23,6 +23,7 @@ export default function Home() {
       console.error("Error uploading from URL:", error);
     } finally {
       setDownloading(false);
+      setUrlDownloadLink("");
     }
   };
 
