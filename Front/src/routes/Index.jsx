@@ -15,10 +15,15 @@ export default function Home() {
   const handleUrlUpload = async () => {
     if (!urlDownloadLink || !uploadRef.current) return;
     setDownloading(true);
-    await uploadRef.current.uploadFromUrl(urlDownloadLink);
-    setDownloading(false);
-    setRefresh(r => r + 1);
-    uploadedFilesRef.current?.refresh();
+    try {
+      await uploadRef.current.uploadFromUrl(urlDownloadLink);
+      uploadedFilesRef.current?.refresh();
+      setRefresh(r => r + 1);
+    } catch (error) {
+      console.error("Error uploading from URL:", error);
+    } finally {
+      setDownloading(false);
+    }
   };
 
   return (
@@ -61,9 +66,15 @@ export default function Home() {
               </button>
             </div>
 
-            <Upload ref={uploadRef} onUploadSuccess={() => { uploadedFilesRef.current?.refresh(); setRefresh(r => r + 1); }} />
+            <Upload ref={uploadRef} onUploadSuccess={() => { 
+              uploadedFilesRef.current?.refresh(true); 
+              setRefresh(r => r + 1); 
+            }} />
             <FileAnalysis refresh={refresh} />
-            <UploadedFiles ref={uploadedFilesRef} onFilesChanged={() => setRefresh(r => r + 1)} />
+            <UploadedFiles 
+              ref={uploadedFilesRef} 
+              onFilesChanged={() => setRefresh(r => r + 1)} 
+            />
           </div>
         </main>
 

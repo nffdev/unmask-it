@@ -57,9 +57,11 @@ router.post('/', async (req, res) => {
     };
     await scanFile(req, res, () => {});
     if (res.headersSent) return;
+    const fileId = Date.now().toString();
     return res.json({
+      id: fileId,
       name: filename,
-      size: stats.size,
+      size: `${Math.round(stats.size / 1024)} KB`,
       type: 'exe',
       status: 'completed',
       date: Date.now()

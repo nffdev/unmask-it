@@ -28,16 +28,38 @@ export const Upload = forwardRef(function Upload({ onUploadSuccess }, ref) {
         if (!response.ok) {
           toast.error('Failed to download file from URL.');
           console.log('[uploadFromUrl] backend error:', data.error || 'Failed to scan file from URL.');
-          setUploading(false);
-          return;
+          throw new Error(data.error || 'Failed to scan file from URL.');
         }
-        toast.success('File downloaded and scanned successfully!');
+        
+        if (!data.id) data.id = Date.now().toString();
+        if (!data.date) data.date = new Date().toISOString();
+        if (!data.name) data.name = url.split('/').pop() || 'downloaded.exe';
+        if (!data.size) data.size = '0 KB';
+        if (!data.type) data.type = 'exe';
+        
+        const fileData = {
+          id: data.id,
+          name: data.name,
+          size: data.size,
+          type: data.type,
+          status: data.status || 'completed',
+          date: data.date
+        };
+        
         const uploadedFiles = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
-        uploadedFiles.unshift(data);
+        uploadedFiles.unshift(fileData);
         localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
-        if (onUploadSuccess) onUploadSuccess(data);
+        
+        toast.success('File downloaded and scanned successfully!');
+        setUploadSuccess('File downloaded and scanned successfully!');
+        
+        if (onUploadSuccess) onUploadSuccess(fileData);
+        
+        return data;
       } catch (err) {
+        setUploadError(err.message);
         toast.error('Failed to download or scan file: ' + err.message);
+        throw err; 
       } finally {
         setUploading(false);
       }

@@ -14,16 +14,32 @@ export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
   const [selectedFile, setSelectedFile] = useState(null)
   const [dialogOpen, setDialogOpen] = useState(false)
 
-  async function fetchFiles() {
+  async function fetchFiles(silent = false) {
     try {
       const data = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
-      setFiles(data);
-      if (data.length > 0) {
+      
+      const sortedData = data.sort((a, b) => {
+        const dateA = a.date ? new Date(a.date) : new Date(0);
+        const dateB = b.date ? new Date(b.date) : new Date(0);
+        return dateB - dateA;
+      });
+      
+      setFiles(sortedData);
+      
+      if (!silent && props.silent !== true && data.length > 0) {
         toast.info(`${data.length} file(s) loaded`);
       }
+      
+      if (props.onFilesChanged) {
+        props.onFilesChanged(sortedData);
+      }
+      
+      return sortedData;
     } catch (e) {
+      console.error('Failed to load uploaded files:', e);
       setFiles([]);
       toast.error('Failed to load uploaded files.');
+      return [];
     }
   }
 
@@ -87,9 +103,9 @@ export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
                       </svg>
                     </div>
                     <div>
-                      <p className="font-medium text-white">{file.name}</p>
+                      <p className="font-medium text-white">{file.name || 'Unknown file'}</p>
                       <p className="text-sm text-gray-400">
-                        {file.size} • {file.type}
+                        {file.size || '0 KB'} • {file.type ? (file.type.includes('/') ? file.type.split('/').pop() : file.type) : 'exe'}
                       </p>
                     </div>
                   </div>
@@ -142,10 +158,10 @@ export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
             <DialogDescription className="text-gray-300">
               {selectedFile ? (
                 <div className="space-y-2 mt-2">
-                  <div><span className="text-gray-400 font-semibold">Name:</span> <span className="text-gray-200">{selectedFile.name}</span></div>
-                  <div><span className="text-gray-400 font-semibold">Type:</span> <span className="text-gray-200">{selectedFile.type}</span></div>
-                  <div><span className="text-gray-400 font-semibold">Size:</span> <span className="text-gray-200">{selectedFile.size}</span></div>
-                  <div><span className="text-gray-400 font-semibold">Status:</span> <span className="text-gray-200">{selectedFile.status}</span></div>
+                  <div><span className="text-gray-400 font-semibold">Name:</span> <span className="text-gray-200">{selectedFile.name || 'Unknown'}</span></div>
+                  <div><span className="text-gray-400 font-semibold">Type:</span> <span className="text-gray-200">{selectedFile.type || 'Unknown'}</span></div>
+                  <div><span className="text-gray-400 font-semibold">Size:</span> <span className="text-gray-200">{selectedFile.size || 'Unknown'}</span></div>
+                  <div><span className="text-gray-400 font-semibold">Status:</span> <span className="text-gray-200">{selectedFile.status || 'Unknown'}</span></div>
                   {selectedFile.date && (
                     <div><span className="text-gray-400 font-semibold">Date:</span> <span className="text-gray-200">{new Date(selectedFile.date).toLocaleString()}</span></div>
                   )}
