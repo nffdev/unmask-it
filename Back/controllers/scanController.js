@@ -22,6 +22,7 @@ export async function scanFile(req, res) {
 
     const scan = new Scan({ filename, originalname, mimetype, size, hash, result: 'clean' });
     await scan.save();
+    // TODO : Implement real logic here
 
     res.status(201).json({ id: scan._id, filename, hash, result: scan.result });
   } catch (err) {
