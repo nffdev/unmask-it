@@ -5,18 +5,45 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { useRef, useState } from "react"
 
+function validateAllowedUrl(url) {
+  try {
+    const parsed = new URL(url);
+    const allowedDomains = [
+      "gofile.io",
+      "github.com",
+      "raw.githubusercontent.com",
+      "cdn.discordapp.com",
+      "discord.com",
+    ];
+    return allowedDomains.some(domain => parsed.hostname.endsWith(domain));
+  } catch {
+    return false;
+  }
+}
+
 export default function Home() {
   const uploadedFilesRef = useRef();
   const uploadRef = useRef();
   const [urlDownloadLink, setUrlDownloadLink] = useState("");
   const [downloading, setDownloading] = useState(false);
   const [refresh, setRefresh] = useState(0);
+  const [url, setUrl] = useState("");
+  const [urlError, setUrlError] = useState("");
+
+  const handleUrlChange = (e) => {
+    setUrl(e.target.value);
+    setUrlError("");
+  };
 
   const handleUrlUpload = async () => {
-    if (!urlDownloadLink || !uploadRef.current) return;
+    if (!url || !uploadRef.current) return;
+    if (!validateAllowedUrl(url)) {
+      setUrlError("Only gofile, github, or discord links are allowed.");
+      return;
+    }
     setDownloading(true);
     try {
-      await uploadRef.current.uploadFromUrl(urlDownloadLink);
+      await uploadRef.current.uploadFromUrl(url);
       uploadedFilesRef.current?.refresh();
       setRefresh(r => r + 1);
     } catch (error) {
@@ -24,6 +51,7 @@ export default function Home() {
     } finally {
       setDownloading(false);
       setUrlDownloadLink("");
+      setUrl("");
     }
   };
 
@@ -39,14 +67,17 @@ export default function Home() {
             <div className="relative">
               <input
                 type="text"
-                value={urlDownloadLink}
-                onChange={e => setUrlDownloadLink(e.target.value)}
+                value={url}
+                onChange={handleUrlChange}
                 placeholder="Enter download link (GitHub/GoFile/Discord)"
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl py-3 px-4 pr-12 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
               />
+              {urlError && (
+                <div className="text-red-500 text-xs mt-1">{urlError}</div>
+              )}
               <button
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-white p-2 hover:text-indigo-400 transition-colors disabled:opacity-60"
-                disabled={!urlDownloadLink || downloading}
+                disabled={!!urlError || !url}
                 onClick={handleUrlUpload}
               >
                 <svg

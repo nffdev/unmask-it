@@ -32,6 +32,24 @@ router.post('/', async (req, res) => {
       const match = contentDisposition.match(/filename="?([^";]+)"?/);
       if (match) filename = match[1];
     }
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(url);
+    } catch (e) {
+      return res.status(400).json({ error: 'Invalid URL.' });
+    }
+
+    const allowedDomains = [
+      'gofile.io',
+      'github.com',
+      'raw.githubusercontent.com',
+      'cdn.discordapp.com',
+      'discord.com',
+    ];
+    const isAllowed = allowedDomains.some(domain => parsedUrl.hostname.endsWith(domain));
+    if (!isAllowed) {
+      return res.status(400).json({ error: 'URL must be from gofile.io, github.com, or discord.' });
+    }
     if (!filename.toLowerCase().endsWith('.exe')) {
       console.log(`[download] Reject: Invalid file type for ${filename}`);
       return res.status(400).json({ error: 'Only .exe files are allowed.' });
