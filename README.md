@@ -74,6 +74,8 @@ Contributions are welcome! To participate:
 
 This project is licensed under the MIT License.
 
+This project is inspired by [uncoverit.org](https://uncoverit.org).
+
 ---
 
 ## Contact
