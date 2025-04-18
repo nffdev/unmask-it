@@ -25,7 +25,6 @@ function validateAllowedUrl(url) {
 export default function Home() {
   const uploadedFilesRef = useRef();
   const uploadRef = useRef();
-  const [urlDownloadLink, setUrlDownloadLink] = useState("");
   const [downloading, setDownloading] = useState(false);
   const [refresh, setRefresh] = useState(0);
   const [url, setUrl] = useState("");
@@ -51,7 +50,6 @@ export default function Home() {
       console.error("Error uploading from URL:", error);
     } finally {
       setDownloading(false);
-      setUrlDownloadLink("");
       setUrl("");
     }
   };
