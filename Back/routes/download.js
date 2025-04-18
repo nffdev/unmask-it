@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { scanFile } from '../controllers/scanController.js';
+import { isWindowsExecutable } from '../controllers/scanController.js';
 import multer from 'multer';
 
 const router = express.Router();
@@ -13,6 +14,7 @@ const __dirname = path.dirname(__filename);
 
 const uploadsDir = path.join(__dirname, '../uploads/');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
+
 
 router.post('/', async (req, res) => {
   const { url } = req.body;
@@ -61,6 +63,13 @@ router.post('/', async (req, res) => {
       response.body.on('error', reject);
       fileStream.on('finish', resolve);
     });
+    
+    if (!isWindowsExecutable(tempPath)) {
+      fs.unlinkSync(tempPath);
+      console.log(`[download] Reject: File is not a valid Windows executable: ${filename}`);
+      return res.status(400).json({ error: 'The downloaded file is not a valid Windows executable.' });
+    }
+    
     const stats = fs.statSync(tempPath);
     console.log(`[download] File size: ${stats.size} bytes for ${filename}`);
     if (stats.size > 50 * 1024 * 1024) {

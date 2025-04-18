@@ -2,6 +2,20 @@ import fs from 'fs';
 import crypto from 'crypto';
 import Scan from '../models/Scan.js';
 
+export function isWindowsExecutable(filePath) {
+  try {
+    const buffer = Buffer.alloc(4);
+    const fd = fs.openSync(filePath, 'r');
+    fs.readSync(fd, buffer, 0, 4, 0);
+    fs.closeSync(fd);
+    
+    return buffer[0] === 0x4D && buffer[1] === 0x5A;
+  } catch (error) {
+    console.error(`Error checking file signature: ${error.message}`);
+    return false;
+  }
+}
+
 function calculateFileHash(filePath) {
   return new Promise((resolve, reject) => {
     const hash = crypto.createHash('sha256');
