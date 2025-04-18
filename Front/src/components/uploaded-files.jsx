@@ -8,11 +8,25 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { toast } from "sonner"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
   const [files, setFiles] = useState([])
   const [selectedFile, setSelectedFile] = useState(null)
   const [dialogOpen, setDialogOpen] = useState(false)
+  
+  const FILES_PER_PAGE = 3;
+  const [page, setPage] = useState(1);
+  const totalPages = Math.ceil(files.length / FILES_PER_PAGE);
+  const paginatedFiles = files.slice((page - 1) * FILES_PER_PAGE, page * FILES_PER_PAGE);
 
   async function fetchFiles(silent = false) {
     try {
@@ -46,6 +60,12 @@ export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
   useEffect(() => {
     fetchFiles();
   }, []);
+  
+  useEffect(() => {
+    if (page > 1 && (page - 1) * FILES_PER_PAGE >= files.length) {
+      setPage(1);
+    }
+  }, [files, page]);
 
   useImperativeHandle(ref, () => ({
     refresh: fetchFiles
@@ -78,58 +98,96 @@ export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         {files.length > 0 ? (
-          <div className="space-y-3">
-            {files.map((file) => (
-              <DialogTrigger asChild key={file.id}>
-                <div
-                  className="flex items-center justify-between bg-zinc-700/30 p-4 rounded-xl hover:bg-zinc-700/40 transition-colors cursor-pointer"
-                  onClick={() => { setSelectedFile(file); setDialogOpen(true); }}
-                >
-                  <div className="flex items-center">
-                    <div className="mr-3 p-2 bg-zinc-700 rounded-lg">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                        <polyline points="14 2 14 8 20 8" />
-                      </svg>
+          <>
+            <div className="space-y-3">
+              {paginatedFiles.map((file) => (
+                <DialogTrigger asChild key={file.id}>
+                  <div
+                    className="flex items-center justify-between bg-zinc-700/30 p-4 rounded-xl hover:bg-zinc-700/40 transition-colors cursor-pointer"
+                    onClick={() => { setSelectedFile(file); setDialogOpen(true); }}
+                  >
+                    <div className="flex items-center">
+                      <div className="mr-3 p-2 bg-zinc-700 rounded-lg">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                          <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="font-medium text-white">{file.name || 'Unknown file'}</p>
+                        <p className="text-sm text-gray-400">
+                          {file.size || '0 KB'} • {file.type ? (file.type.includes('/') ? file.type.split('/').pop() : file.type) : 'exe'}
+                        </p>
+                      </div>
                     </div>
                     <div>
-                      <p className="font-medium text-white">{file.name || 'Unknown file'}</p>
-                      <p className="text-sm text-gray-400">
-                        {file.size || '0 KB'} • {file.type ? (file.type.includes('/') ? file.type.split('/').pop() : file.type) : 'exe'}
-                      </p>
+                      {file.status === "analyzing" && (
+                        <span className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs">Analyzing</span>
+                      )}
+                      {(file.status === "completed" || file.status === "clean") && (
+                        <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs mr-2">Completed</span>
+                      )}
+                      {file.status === "failed" && (
+                        <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs mr-2">Failed</span>
+                      )}
+                      {(file.status === "completed" || file.status === "clean") && (
+                        <span className="px-2 py-1 bg-green-600/20 text-green-400 rounded-full text-xs">Clean</span>
+                      )}
+                      {file.status === "infected" && (
+                        <span className="px-2 py-1 bg-red-600/20 text-red-400 rounded-full text-xs">Infected</span>
+                      )}
                     </div>
                   </div>
-                  <div>
-                    {file.status === "analyzing" && (
-                      <span className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs">Analyzing</span>
-                    )}
-                    {(file.status === "completed" || file.status === "clean") && (
-                      <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs mr-2">Completed</span>
-                    )}
-                    {file.status === "failed" && (
-                      <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs mr-2">Failed</span>
-                    )}
-                    {(file.status === "completed" || file.status === "clean") && (
-                      <span className="px-2 py-1 bg-green-600/20 text-green-400 rounded-full text-xs">Clean</span>
-                    )}
-                    {file.status === "infected" && (
-                      <span className="px-2 py-1 bg-red-600/20 text-red-400 rounded-full text-xs">Infected</span>
-                    )}
-                  </div>
-                </div>
-              </DialogTrigger>
-            ))}
-          </div>
+                </DialogTrigger>
+              ))}
+            </div>
+            
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-4">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        href="#" 
+                        onClick={(e) => { e.preventDefault(); if (page > 1) setPage(page - 1); }}
+                        className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                      />
+                    </PaginationItem>
+                    
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                      <PaginationItem key={pageNum}>
+                        <PaginationLink 
+                          href="#" 
+                          onClick={(e) => { e.preventDefault(); setPage(pageNum); }}
+                          isActive={page === pageNum}
+                        >
+                          {pageNum}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    
+                    <PaginationItem>
+                      <PaginationNext 
+                        href="#" 
+                        onClick={(e) => { e.preventDefault(); if (page < totalPages) setPage(page + 1); }}
+                        className={page === totalPages ? "pointer-events-none opacity-50" : ""}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-12 px-6 bg-zinc-700/20 rounded-xl">
             <div className="inline-flex p-4 bg-zinc-700/30 rounded-full text-gray-400 mb-4">
