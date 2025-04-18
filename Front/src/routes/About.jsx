@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
+import { motion } from "framer-motion";
 
 export default function AboutPage() {
   return (
@@ -7,7 +8,12 @@ export default function AboutPage() {
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         <Navigation />
 
-        <main className="mt-8 bg-zinc-900/60 rounded-2xl p-8 shadow-xl">
+        <motion.main
+          className="mt-8 bg-zinc-900/60 rounded-2xl p-8 shadow-xl"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
           <h1 className="text-3xl font-bold mb-8 text-white">About</h1>
 
           <div className="space-y-8">
@@ -115,7 +121,7 @@ export default function AboutPage() {
               </p>
             </section>
           </div>
-        </main>
+        </motion.main>
 
         <Footer />
       </div>
