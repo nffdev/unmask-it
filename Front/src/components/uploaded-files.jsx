@@ -72,7 +72,7 @@ export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
   }));
 
   return (
-    <div className="bg-zinc-800 rounded-2xl p-4 sm:p-6 border border-zinc-700/50 w-full max-w-xl mx-auto">
+    <div className="bg-zinc-800 rounded-2xl p-6 border border-zinc-700/50">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
         <div className="flex items-center">
           <div className="p-2 bg-indigo-500/10 rounded-xl text-indigo-400 mr-3">
