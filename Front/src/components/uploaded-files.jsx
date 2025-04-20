@@ -72,8 +72,8 @@ export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
   }));
 
   return (
-    <div className="bg-zinc-800 rounded-2xl p-6 border border-zinc-700/50">
-      <div className="flex justify-between items-center mb-6">
+    <div className="bg-zinc-800 rounded-2xl p-4 sm:p-6 border border-zinc-700/50 w-full max-w-xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
         <div className="flex items-center">
           <div className="p-2 bg-indigo-500/10 rounded-xl text-indigo-400 mr-3">
             <svg
@@ -103,10 +103,10 @@ export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
               {paginatedFiles.map((file) => (
                 <DialogTrigger asChild key={file.id}>
                   <div
-                    className="flex items-center justify-between bg-zinc-700/30 p-4 rounded-xl hover:bg-zinc-700/40 transition-colors cursor-pointer"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between bg-zinc-700/30 p-3 sm:p-4 rounded-xl hover:bg-zinc-700/40 transition-colors cursor-pointer gap-2 sm:gap-0"
                     onClick={() => { setSelectedFile(file); setDialogOpen(true); }}
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center min-w-0">
                       <div className="mr-3 p-2 bg-zinc-700 rounded-lg">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
