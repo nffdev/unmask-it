@@ -116,7 +116,8 @@ export const Upload = forwardRef(function Upload({ onUploadSuccess }, ref) {
         name: files[0].name,
         size: (files[0].size / 1024).toFixed(2) + ' KB', 
         type: files[0].type,
-        status: data.result || 'completed',
+        status: 'completed', 
+        result: data.result, 
         date: new Date().toISOString()
       });
       localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));

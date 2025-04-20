@@ -137,14 +137,14 @@ export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
                       {(file.status === "completed" || file.status === "clean") && (
                         <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs mr-2">Completed</span>
                       )}
+                      {file.result === "clean" && (
+                        <span className="px-2 py-1 bg-green-600/20 text-green-400 rounded-full text-xs">Clean</span>
+                      )}
                       {file.status === "failed" && (
                         <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs mr-2">Failed</span>
                       )}
-                      {(file.status === "completed" || file.status === "clean") && (
-                        <span className="px-2 py-1 bg-green-600/20 text-green-400 rounded-full text-xs">Clean</span>
-                      )}
-                      {file.status === "infected" && (
-                        <span className="px-2 py-1 bg-red-600/20 text-red-400 rounded-full text-xs">Infected</span>
+                      {(file.status === "infected" || file.result === "malicious") && (
+                        <span className="px-2 py-1 bg-red-600/20 text-red-400 rounded-full text-xs">Malicious</span>
                       )}
                     </div>
                   </div>
