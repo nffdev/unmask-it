@@ -14,6 +14,7 @@ export function Navigation() {
   const linkRefs = useRef([]);
   const [sliderStyle, setSliderStyle] = useState({ left: 0, width: 0 });
   const [hoveredIdx, setHoveredIdx] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useLayoutEffect(() => {
     function updateSlider() {
@@ -54,7 +55,47 @@ export function Navigation() {
         </svg>
         Unmask It
       </Link>
-      <nav>
+      
+      <button 
+        className="md:hidden p-2 text-white focus:outline-none" 
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        aria-label="Toggle menu"
+      >
+        {mobileMenuOpen ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        )}
+      </button>
+
+      <nav className="hidden md:block">
         <div style={{ position: "relative" }}>
           <ul className="flex space-x-6 items-center h-[44px] relative">
             <div
@@ -97,6 +138,53 @@ export function Navigation() {
           </ul>
         </div>
       </nav>
+
+      <div 
+        className={`fixed top-0 right-0 h-full w-64 bg-zinc-900 shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'} md:hidden`}
+      >
+        <div className="flex justify-end p-4">
+          <button 
+            onClick={() => setMobileMenuOpen(false)}
+            className="text-white focus:outline-none"
+            aria-label="Close menu"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <ul className="flex flex-col space-y-4 p-4">
+          {navLinks.map((l, i) => (
+            <li key={l.to}>
+              <Link
+                to={l.to}
+                className={`block py-2 px-4 rounded-lg ${location.pathname === l.to ? 'bg-zinc-800 text-indigo-400' : 'text-white hover:bg-zinc-800'}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {l.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
     </header>
   );
 }
