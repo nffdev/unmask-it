@@ -1,35 +1,6 @@
 const fs = require('fs');
-const crypto = require('crypto');
-const mime = require('mime-types');
 const path = require('path');
-
-/**
- * Scan a file and return basic info (hash, size, mimetype, status)
- * @param {string} filePath - Path to the file
- * @returns {Promise<object>} - Scan result
- */
-async function scanFile(filePath) {
-  return new Promise((resolve, reject) => {
-    fs.stat(filePath, (err, stats) => {
-      if (err) return reject(err);
-      const size = stats.size;
-      const mimetype = mime.lookup(filePath) || 'application/octet-stream';
-      const hash = crypto.createHash('sha256');
-      const stream = fs.createReadStream(filePath);
-      stream.on('data', chunk => hash.update(chunk));
-      stream.on('end', () => {
-        resolve({
-          filePath,
-          size,
-          mimetype,
-          hash: hash.digest('hex'),
-          result: 'clean' // TODO : implement real logic here
-        });
-      });
-      stream.on('error', reject);
-    });
-  });
-}
+const { scanFile } = require('./scanner');
 
 // --- CLI ---
 if (require.main === module) {
@@ -49,16 +20,26 @@ if (require.main === module) {
             process.exit(3);
         }
         try {
-            const report = scanFile(filePath); // Modified here
+            const report = scanFile(buffer);
             console.log('--- Unmask-It Static Scanner Report ---');
             console.log('File:', path.basename(filePath));
-            console.log('PE Valid:', report.result === 'clean'); // Modified here
+            console.log('PE Valid:', report.isPE);
             if (report.error) console.log('Error:', report.error);
-            if (report.result === 'clean') { // Modified here
-                console.log('Architecture:', 'Unknown'); // Modified here
-                console.log('Sections:', 'Unknown'); // Modified here
-                console.log('Suspicious Sections:', 'Unknown'); // Modified here
-                console.log('QuasarRAT Detected: NO'); // Modified here
+            if (report.isPE) {
+                console.log('Architecture:', report.arch);
+                console.log('Sections:', report.peInfo.sections.map(s => s.name).join(', '));
+                if (report.suspiciousSections.length > 0) {
+                    console.log('Suspicious Sections:', report.suspiciousSections.map(s => s.name).join(', '));
+                }
+                if (report.quasar) {
+                    console.log('QuasarRAT Detected:', report.quasar.found ? 'YES' : 'NO');
+                    if (report.quasar.details.length > 0) {
+                        console.log('Details:');
+                        for (const d of report.quasar.details) console.log(' -', d);
+                    }
+                } else {
+                    console.log('QuasarRAT Detected: NO');
+                }
             }
         } catch (e) {
             console.error('Scan error:', e.message);
@@ -66,5 +47,3 @@ if (require.main === module) {
         }
     });
 }
-
-module.exports = { scanFile };
