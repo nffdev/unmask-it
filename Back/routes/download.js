@@ -314,15 +314,20 @@ router.post('/', async (req, res) => {
     }
     const fileSizeInBytes = parseInt(stats.size, 10);
     console.log(`[download] File size: ${fileSizeInBytes} bytes (type: ${typeof fileSizeInBytes})`);
-    // TODO : implement scan file
+    console.log(`[download] Downloaded successfully, now scanning...`);
+    const buffer = await fs.promises.readFile(tempPath);
+    const report = (await import('../../Scanner/scanner.js')).default.scanFile(buffer);
+    const result = report.quasar && report.quasar.found ? 'malicious' : 'clean';
     const fileId = Date.now().toString();
-    
+
     return res.json({
       id: fileId,
       name: filename,
       size: fileSizeInBytes,
       type: 'exe',
       status: 'completed',
+      result,
+      report,
       date: Date.now()
     }); 
   } catch (err) {

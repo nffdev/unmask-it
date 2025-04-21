@@ -56,6 +56,7 @@ export const Upload = forwardRef(function Upload({ onUploadSuccess }, ref) {
           size: fileSize,
           type: data.type,
           status: data.status || 'completed',
+          result: data.result || '',
           date: data.date
         };
         
