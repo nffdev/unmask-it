@@ -96,7 +96,7 @@ scanner.scanFile('path/to/file.exe')
 ```
 
 ### Repository
-[https://github.com/nffdev/unmask-it](https://github.com/nffdev/unmask-it)
+[https://github.com/nffdev/unmask-it/](https://github.com/nffdev/unmask-it/tree/main/Scanner)
 
 ---
 
