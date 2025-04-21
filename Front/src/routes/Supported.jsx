@@ -146,6 +146,63 @@ export default function SupportedPage() {
                 ))}
               </div>
             </section>
+            <section className="bg-zinc-800/50 p-6 rounded-2xl border border-zinc-700/50">
+              <h2 className="text-2xl font-semibold mb-6 text-white flex items-center">
+                <span className="p-2 bg-red-500/10 rounded-xl text-red-400 mr-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2v2" />
+                    <path d="M12 20v2" />
+                    <path d="M5.22 5.22l1.42 1.42" />
+                    <path d="M17.36 17.36l1.42 1.42" />
+                    <path d="M2 12h2" />
+                    <path d="M20 12h2" />
+                    <circle cx="12" cy="12" r="5" />
+                  </svg>
+                </span>
+                Supported Malware
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  {
+                    name: "QuasarRAT (fully supported)",
+                    icon: (
+                      <span className="mr-3 text-red-400 p-2 bg-red-500/10 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 15h8M9 9h.01M15 9h.01" /></svg>
+                      </span>
+                    ),
+                    className: "bg-zinc-700/20",
+                    comingSoon: false
+                  },
+                  {
+                    name: "AsyncRAT",
+                    icon: (
+                      <span className="mr-3 text-yellow-400 p-2 bg-yellow-500/10 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 15h8M9 9h.01M15 9h.01" /></svg>
+                      </span>
+                    ),
+                    className: "bg-zinc-700/10 opacity-60",
+                    comingSoon: true
+                  },
+                  {
+                    name: "DCRat",
+                    icon: (
+                      <span className="mr-3 text-yellow-400 p-2 bg-yellow-500/10 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 15h8M9 9h.01M15 9h.01" /></svg>
+                      </span>
+                    ),
+                    className: "bg-zinc-700/10 opacity-60",
+                    comingSoon: true
+                  }
+                ].map((item, index) => (
+                  <div key={index} className={`${item.className} p-4 rounded-xl flex items-center hover:bg-zinc-700/30 transition-colors`}>
+                    {item.icon}
+                    <span>
+                      {item.name} {item.comingSoon && <span className="text-xs text-gray-400 ml-2">(coming soon)</span>}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </section>
           </div>
         </motion.main>
 
