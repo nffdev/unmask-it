@@ -5,7 +5,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
+import { useState } from "react"
+
 export function Footer() {
+  const [copied, setCopied] = useState("");
+
+  const manageCopy = (crypto, value) => {
+    navigator.clipboard.writeText(value);
+    setCopied(crypto);
+    setTimeout(() => setCopied(""), 1200);
+  };
+
   return (
     <footer className="mt-12 py-6 border-t border-zinc-800">
       <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
@@ -41,27 +51,57 @@ export function Footer() {
             <div className="space-y-2">
               <div className="flex items-center">
                 <span className="w-24">Bitcoin</span>
-                <span className="bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all">bcaaaaaaaaaaaaaaaaaaaa...</span>
+                <button
+                  className={`bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all transition border border-transparent ${copied === "btc" ? "border-green-500 text-green-400" : "hover:border-zinc-600"}`}
+                  onClick={() => manageCopy("btc", "bcaaaaaaaaaaaaaaaaaaaa...")}
+                >
+                  {copied === "btc" ? "Copied!" : "bcaaaaaaaaaaaaaaaaaaaa..."}
+                </button>
               </div>
               <div className="flex items-center">
                 <span className="w-24">Ethereum</span>
-                <span className="bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all">0x0000000000000000000000...</span>
+                <button
+                  className={`bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all transition border border-transparent ${copied === "eth" ? "border-green-500 text-green-400" : "hover:border-zinc-600"}`}
+                  onClick={() => manageCopy("eth", "0x0000000000000000000000...")}
+                >
+                  {copied === "eth" ? "Copied!" : "0x0000000000000000000000..."}
+                </button>
               </div>
               <div className="flex items-center">
                 <span className="w-24">XRP</span>
-                <span className="bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all">xp0000000000000000000000...</span>
+                <button
+                  className={`bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all transition border border-transparent ${copied === "xrp" ? "border-green-500 text-green-400" : "hover:border-zinc-600"}`}
+                  onClick={() => manageCopy("xrp", "xp0000000000000000000000...")}
+                >
+                  {copied === "xrp" ? "Copied!" : "xp0000000000000000000000..."}
+                </button>
               </div>
               <div className="flex items-center">
                 <span className="w-24">Litecoin</span>
-                <span className="bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all">ltc0000000000000000000000...</span>
+                <button
+                  className={`bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all transition border border-transparent ${copied === "ltc" ? "border-green-500 text-green-400" : "hover:border-zinc-600"}`}
+                  onClick={() => manageCopy("ltc", "ltc0000000000000000000000...")}
+                >
+                  {copied === "ltc" ? "Copied!" : "ltc0000000000000000000000..."}
+                </button>
               </div>
               <div className="flex items-center">
                 <span className="w-24">Solana</span>
-                <span className="bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all">sl0000000000000000000000...</span>
+                <button
+                  className={`bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all transition border border-transparent ${copied === "sol" ? "border-green-500 text-green-400" : "hover:border-zinc-600"}`}
+                  onClick={() => manageCopy("sol", "sl0000000000000000000000...")}
+                >
+                  {copied === "sol" ? "Copied!" : "sl0000000000000000000000..."}
+                </button>
               </div>
               <div className="flex items-center">
                 <span className="w-24">Monero</span>
-                <span className="bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all">m0000000000000000000000...</span>
+                <button
+                  className={`bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all transition border border-transparent ${copied === "xmr" ? "border-green-500 text-green-400" : "hover:border-zinc-600"}`}
+                  onClick={() => manageCopy("xmr", "m0000000000000000000000...")}
+                >
+                  {copied === "xmr" ? "Copied!" : "m0000000000000000000000..."}
+                </button>
               </div>
             </div>
           </PopoverContent>
