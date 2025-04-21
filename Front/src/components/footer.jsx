@@ -1,4 +1,9 @@
 import { Link } from "react-router-dom"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 export function Footer() {
   return (
@@ -22,12 +27,45 @@ export function Footer() {
         >
           Debugger
         </Link>
-        <Link
-          to="/donate"
-          className="px-4 py-2 rounded-full bg-zinc-800/50 hover:bg-indigo-500/10 hover:text-indigo-400 transition-all"
-        >
-          Donate
-        </Link>
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              className="px-4 py-2 rounded-full bg-zinc-800/50 hover:bg-indigo-500/10 hover:text-indigo-400 transition-all"
+            >
+              Donate
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[340px] bg-zinc-900 border-zinc-700 text-gray-200">
+            <div className="font-bold text-lg mb-2">Donate</div>
+            <div className="mb-4 text-sm text-gray-400">Currently we only accept donations via cryptocurrency.</div>
+            <div className="space-y-2">
+              <div className="flex items-center">
+                <span className="w-24">Bitcoin</span>
+                <span className="bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all">bcaaaaaaaaaaaaaaaaaaaa...</span>
+              </div>
+              <div className="flex items-center">
+                <span className="w-24">Ethereum</span>
+                <span className="bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all">0x0000000000000000000000...</span>
+              </div>
+              <div className="flex items-center">
+                <span className="w-24">XRP</span>
+                <span className="bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all">xp0000000000000000000000...</span>
+              </div>
+              <div className="flex items-center">
+                <span className="w-24">Litecoin</span>
+                <span className="bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all">ltc0000000000000000000000...</span>
+              </div>
+              <div className="flex items-center">
+                <span className="w-24">Solana</span>
+                <span className="bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all">sl0000000000000000000000...</span>
+              </div>
+              <div className="flex items-center">
+                <span className="w-24">Monero</span>
+                <span className="bg-zinc-800 px-2 py-1 rounded text-xs ml-2 select-all">m0000000000000000000000...</span>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
       <div className="flex justify-center mt-6 space-x-4">
