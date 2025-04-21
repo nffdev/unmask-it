@@ -1,9 +1,13 @@
 {
-  "name": "scanner",
+  "name": "malware-scanner",
   "version": "1.0.0",
   "description": "Minimal file scanner module for Unmask-it.",
   "main": "index.js",
-  "author": "",
+  "author": "nffdev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nffdev/unmask-it.git"
+  },
   "license": "MIT",
   "dependencies": {
     "mime-types": "^2.1.35"
