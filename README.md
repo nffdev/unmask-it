@@ -70,6 +70,36 @@ Contributions are welcome! To participate:
 
 ---
 
+## 📦 npm package: malware-scanner
+
+[![npm version](https://img.shields.io/npm/v/malware-scanner.svg)](https://www.npmjs.com/package/malware-scanner)
+
+Minimal file scanner module for Unmask-it. This package allows you to analyze and validate executable files (PE) and detect suspicious or malicious characteristics.
+
+### Installation
+```bash
+npm install malware-scanner
+```
+
+### Usage
+```js
+const scanner = require('malware-scanner');
+
+// Example: scan a local file
+scanner.scanFile('path/to/file.exe')
+  .then(report => {
+    console.log(report);
+  })
+  .catch(err => {
+    console.error('Scan failed:', err);
+  });
+```
+
+### Repository
+[https://github.com/nffdev/unmask-it](https://github.com/nffdev/unmask-it)
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License.
