@@ -104,8 +104,7 @@ export function Navigation() {
                 position: "absolute",
                 top: 0,
                 left: sliderStyle.left,
-                width: "80px",
-                // width: sliderStyle.width,
+                width: sliderStyle.width, // 80px
                 borderRadius: "8px",
                 background: "#434a56",
                 transition: "left 0.35s cubic-bezier(0.4,0,0.2,1), width 0.35s cubic-bezier(0.4,0,0.2,1)",
