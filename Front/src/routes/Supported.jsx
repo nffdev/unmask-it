@@ -14,7 +14,7 @@ export default function SupportedPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <h1 className="text-3xl font-bold mb-8 text-white">Supported Software</h1>
+          <h1 className="text-3xl font-bold mb-8 text-white">Supported</h1>
 
           <div className="space-y-8">
             <section className="bg-zinc-800/50 p-6 rounded-2xl border border-zinc-700/50">
@@ -42,9 +42,9 @@ export default function SupportedPage() {
                   { name: "Windows Executables (EXE)", icon: "windows" },
                   { name: "Windows Dynamic Link Libraries (DLL)", icon: "windows" },
                   { name: ".NET Files (EXE, DLL)", icon: "hash" },
-                  { name: "Python Scripts (PY, PYC)", icon: "code" },
-                  { name: "JavaScript Files (EXE, JS)", icon: "code" },
-                  { name: "Go Files (EXE, GO)", icon: "code" },
+                  // { name: "Python Scripts (PY, PYC)", icon: "code" },
+                  // { name: "JavaScript Files (EXE, JS)", icon: "code" },
+                  // { name: "Go Files (EXE, GO)", icon: "code" },
                 ].map((item, index) => (
                   <div
                     key={index}
@@ -136,9 +136,9 @@ export default function SupportedPage() {
                   "C",
                   "C++",
                   "C#",
-                  "Python",
-                  "JavaScript",
-                  "Go (experimental)",
+                  // "Python",
+                  // "JavaScript",
+                  // "Go (experimental)",
                 ].map((item, index) => (
                   <div key={index} className="bg-zinc-700/20 p-4 rounded-xl hover:bg-zinc-700/30 transition-colors">
                     {item}

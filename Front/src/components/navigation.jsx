@@ -8,7 +8,7 @@ export function Navigation() {
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/about", label: "About" },
-    { to: "/supported", label: "Supported Software" },
+    { to: "/supported", label: "Supported" },
     { to: "/status", label: "Status" },
   ];
   const linkRefs = useRef([]);
