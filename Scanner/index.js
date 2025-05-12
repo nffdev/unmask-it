@@ -1,13 +1,40 @@
 const fs = require('fs');
 const path = require('path');
-const { scanFile } = require('./scanner');
+const { scanFile, scanGitHubRepo } = require('./scanner');
 
 // --- CLI ---
 if (require.main === module) {
     const args = process.argv.slice(2);
     if (args.length < 1) {
-        console.error('Usage: node index.js <file.exe>');
+        console.error('Usage: node index.js <file.exe | github-url>');
+        console.error('Examples:');
+        console.error('  node index.js malware.exe        # Scan local executable');
+        console.error('  node index.js --github https://github.com/owner/repo  # Scan GitHub repo');
         process.exit(1);
+    }
+    
+    // Check if we're scanning a GitHub repository
+    if (args[0] === '--github' || args[0] === '-g') {
+        if (args.length < 2) {
+            console.error('Error: GitHub URL required');
+            process.exit(1);
+        }
+        
+        const repoUrl = args[1];
+        const token = args.length > 2 ? args[2] : "";
+        
+        scanGitHubRepo(repoUrl, token)
+            .then(results => {
+                if (results.error) {
+                    console.error('Error:', results.error);
+                    process.exit(1);
+                }
+            })
+            .catch(err => {
+                console.error('Error scanning repository:', err.message);
+                process.exit(1);
+            });
+        return;
     }
     const filePath = args[0];
     if (!fs.existsSync(filePath)) {

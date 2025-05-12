@@ -1,5 +1,6 @@
 const { parsePE } = require('./analysis/pe-parser');
 const { detectQuasar } = require('./signatures/quasar');
+const { scanRepository } = require('./analysis/github-scanner');
 
 /**
  * Scan a Windows executable buffer and return a global report
@@ -45,4 +46,21 @@ function scanFile(buffer) {
     };
 }
 
-module.exports = { scanFile };
+/**
+ * Scan a GitHub repository for suspicious strings in project files
+ * @param {string} repoUrl - GitHub repository URL
+ * @param {string} token - GitHub API token (optional)
+ * @returns {Promise<Object>} Scan results
+ */
+async function scanGitHubRepo(repoUrl, token = "") {
+    console.log("GitHub Backdoor Scanner");
+    
+    if (!repoUrl) {
+        console.log("Usage: Please provide a GitHub repository URL");
+        return { error: "No repository URL provided" };
+    }
+    
+    return scanRepository(repoUrl, token);
+}
+
+module.exports = { scanFile, scanGitHubRepo };
