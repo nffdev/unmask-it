@@ -56,6 +56,12 @@ export default function Home() {
     }
   };
 
+  const [activeTab, setActiveTab] = useState("file");
+
+  const manageTabChange = (value) => {
+    setActiveTab(value);
+  };
+
   return (
     <div className="min-h-screen bg-black text-gray-300">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -69,7 +75,7 @@ export default function Home() {
         >
           <h1 className="text-3xl font-bold text-center mb-8 text-white">Dashboard</h1>
 
-          <Tabs defaultValue="file" className="w-full">
+          <Tabs defaultValue="file" className="w-full" onValueChange={manageTabChange}>
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="file">File Scanner</TabsTrigger>
               <TabsTrigger value="github">GitHub Scanner</TabsTrigger>
@@ -114,22 +120,21 @@ export default function Home() {
                 uploadedFilesRef.current?.refresh(true); 
                 setRefresh(r => r + 1); 
               }} />
+              
+              <div className="mt-8 space-y-6">
+                <FileAnalysis refresh={refresh} />
+                <UploadedFiles 
+                  ref={uploadedFilesRef} 
+                  onFilesChanged={() => setRefresh(r => r + 1)} 
+                />
+              </div>
             </TabsContent>
             
             <TabsContent value="github" className="space-y-6">
               <GitHubScanner onScanSuccess={() => {
-                uploadedFilesRef.current?.refresh(true);
                 setRefresh(r => r + 1);
               }} />
             </TabsContent>
-            
-            <div className="mt-8 space-y-6">
-              <FileAnalysis refresh={refresh} />
-              <UploadedFiles 
-                ref={uploadedFilesRef} 
-                onFilesChanged={() => setRefresh(r => r + 1)} 
-              />
-            </div>
           </Tabs>
         </motion.main>
 
