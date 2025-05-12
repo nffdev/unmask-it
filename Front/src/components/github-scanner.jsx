@@ -105,80 +105,82 @@ export function GitHubScanner({ onScanSuccess }) {
 
   return (
     <div className="space-y-6">
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <GitHubLogoIcon className="h-5 w-5" />
-            GitHub Repository Scanner
-          </CardTitle>
-          <CardDescription>
-            Scan GitHub repositories for suspicious build events and potential backdoors
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+      <div className="bg-zinc-800 rounded-2xl p-6 border border-zinc-700/50">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
+          <div className="flex items-center">
+            <div className="p-2 bg-indigo-500/10 rounded-xl text-indigo-400 mr-3">
+              <GitHubLogoIcon className="w-5 h-5" />
+            </div>
+            <h2 className="text-xl font-semibold text-white">GitHub Repository Scanner</h2>
+          </div>
+        </div>
+        <p className="text-gray-400 mb-6">Scan GitHub repositories for suspicious build events and potential backdoors</p>
+        
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="repo-url" className="text-sm font-medium text-gray-300">
+              GitHub Repository URL
+            </label>
+            <Input
+              id="repo-url"
+              placeholder="https://github.com/username/repository"
+              value={repoUrl}
+              onChange={manageRepoUrlChange}
+              disabled={scanning}
+              className="bg-zinc-700 border-zinc-600 text-white"
+            />
+          </div>
+
+          {error && (
+            <Alert variant="destructive">
+              <ExclamationTriangleIcon className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="link"
+              className="p-0 h-auto text-xs text-indigo-400 hover:text-indigo-300"
+              onClick={() => setShowTokenInput(!showTokenInput)}
+            >
+              {showTokenInput ? "Hide token input" : "Use GitHub token (optional)"}
+            </Button>
+          </div>
+
+          {showTokenInput && (
             <div className="space-y-2">
-              <label htmlFor="repo-url" className="text-sm font-medium">
-                GitHub Repository URL
+              <label htmlFor="github-token" className="text-sm font-medium text-gray-300">
+                GitHub Token (for private repositories)
               </label>
               <Input
-                id="repo-url"
-                placeholder="https://github.com/username/repository"
-                value={repoUrl}
-                onChange={manageRepoUrlChange}
+                id="github-token"
+                type="password"
+                placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                value={githubToken}
+                onChange={manageTokenChange}
                 disabled={scanning}
+                className="bg-zinc-700 border-zinc-600 text-white"
               />
+              <p className="text-xs text-gray-400">
+                The token is only used for this scan and is not stored
+              </p>
             </div>
-
-            {error && (
-              <Alert variant="destructive">
-                <ExclamationTriangleIcon className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                variant="link"
-                className="p-0 h-auto text-xs"
-                onClick={() => setShowTokenInput(!showTokenInput)}
-              >
-                {showTokenInput ? "Hide token input" : "Use GitHub token (optional)"}
-              </Button>
-            </div>
-
-            {showTokenInput && (
-              <div className="space-y-2">
-                <label htmlFor="github-token" className="text-sm font-medium">
-                  GitHub Token (for private repositories)
-                </label>
-                <Input
-                  id="github-token"
-                  type="password"
-                  placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-                  value={githubToken}
-                  onChange={manageTokenChange}
-                  disabled={scanning}
-                />
-                <p className="text-xs text-muted-foreground">
-                  The token is only used for this scan and is not stored
-                </p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-        <CardFooter>
+          )}
+        </div>
+        
+        <div className="mt-6">
           <Button 
             onClick={manageScan} 
             disabled={scanning}
-            className="w-full"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
           >
             {scanning ? "Scanning..." : "Scan Repository"}
           </Button>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
       
       <ScannedRepositories ref={scannedReposRef} />
     </div>
