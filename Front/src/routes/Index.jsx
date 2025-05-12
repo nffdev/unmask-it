@@ -3,8 +3,10 @@ import { FileAnalysis } from "@/components/file-analysis"
 import { UploadedFiles } from "@/components/uploaded-files"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
+import { GitHubScanner } from "@/components/github-scanner"
 import { useRef, useState } from "react"
 import { motion } from "framer-motion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function validateAllowedUrl(url) {
   try {
@@ -67,51 +69,68 @@ export default function Home() {
         >
           <h1 className="text-3xl font-bold text-center mb-8 text-white">Dashboard</h1>
 
-          <div className="space-y-6">
-            <div className="relative">
-              <input
-                type="text"
-                value={url}
-                onChange={handleUrlChange}
-                placeholder="Enter download link (GitHub/GoFile/Discord)"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-xl py-3 px-4 pr-12 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
-              />
-              {urlError && (
-                <div className="text-red-500 text-xs mt-1">{urlError}</div>
-              )}
-              <button
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-white p-2 hover:text-indigo-400 transition-colors disabled:opacity-60"
-                disabled={!!urlError || !url}
-                onClick={handleUrlUpload}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-arrow-right"
+          <Tabs defaultValue="file" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="file">File Scanner</TabsTrigger>
+              <TabsTrigger value="github">GitHub Scanner</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="file" className="space-y-6">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={url}
+                  onChange={handleUrlChange}
+                  placeholder="Enter download link (GitHub/GoFile/Discord)"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-xl py-3 px-4 pr-12 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                />
+                {urlError && (
+                  <div className="text-red-500 text-xs mt-1">{urlError}</div>
+                )}
+                <button
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-white p-2 hover:text-indigo-400 transition-colors disabled:opacity-60"
+                  disabled={!!urlError || !url}
+                  onClick={handleUrlUpload}
                 >
-                  <path d="M5 12h14" />
-                  <path d="m12 5 7 7-7 7" />
-                </svg>
-              </button>
-            </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-arrow-right"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
 
-            <Upload ref={uploadRef} onUploadSuccess={() => { 
-              uploadedFilesRef.current?.refresh(true); 
-              setRefresh(r => r + 1); 
-            }} />
-            <FileAnalysis refresh={refresh} />
-            <UploadedFiles 
-              ref={uploadedFilesRef} 
-              onFilesChanged={() => setRefresh(r => r + 1)} 
-            />
-          </div>
+              <Upload ref={uploadRef} onUploadSuccess={() => { 
+                uploadedFilesRef.current?.refresh(true); 
+                setRefresh(r => r + 1); 
+              }} />
+            </TabsContent>
+            
+            <TabsContent value="github" className="space-y-6">
+              <GitHubScanner onScanSuccess={() => {
+                uploadedFilesRef.current?.refresh(true);
+                setRefresh(r => r + 1);
+              }} />
+            </TabsContent>
+            
+            <div className="mt-8 space-y-6">
+              <FileAnalysis refresh={refresh} />
+              <UploadedFiles 
+                ref={uploadedFilesRef} 
+                onFilesChanged={() => setRefresh(r => r + 1)} 
+              />
+            </div>
+          </Tabs>
         </motion.main>
 
         <Footer />

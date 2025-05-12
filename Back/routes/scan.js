@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { scanFile, getScanResult, isWindowsExecutable } from '../controllers/scanController.js';
+import { scanFile, getScanResult, isWindowsExecutable, scanGitHubRepository } from '../controllers/scanController.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Scan from '../models/Scan.js';
@@ -54,5 +54,7 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+router.post('/github', scanGitHubRepository);
 
 export default router;

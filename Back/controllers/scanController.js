@@ -2,6 +2,7 @@ import fs from 'fs';
 import crypto from 'crypto';
 import Scan from '../models/Scan.js';
 import scanner from '../../Scanner/scanner.js';
+import { scanGitHubRepo } from '../../Scanner/scanner.js';
 
 export function isWindowsExecutable(filePath) {
   try {
@@ -61,6 +62,52 @@ export async function getScanResult(req, res) {
     if (!scan) return res.status(404).json({ error: 'Scan not found.' });
     res.json(scan);
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function scanGitHubRepository(req, res) {
+  try {
+    const { repoUrl } = req.body;
+    
+    if (!repoUrl) {
+      return res.status(400).json({ error: 'Repository URL is required' });
+    }
+    
+    const token = req.body.token || process.env.GITHUB_TOKEN || "";
+    
+    console.log(`[scan] Starting GitHub repository scan for: ${repoUrl}`);
+    
+    // Scan the GitHub repository
+    const scanResults = await scanGitHubRepo(repoUrl, token);
+    
+    // Create a scan record
+    const scan = new Scan({
+      originalname: repoUrl,
+      mimetype: 'github/repository',
+      size: 0,
+      hash: crypto.createHash('md5').update(repoUrl).digest('hex'),
+      result: Object.keys(scanResults.matchesFound).length > 0 ? 'suspicious' : 'clean',
+      report: {
+        type: 'github_scan',
+        repoUrl,
+        matchesFound: scanResults.matchesFound,
+        error: scanResults.error,
+        scanCompleted: scanResults.scanCompleted
+      }
+    });
+    
+    await scan.save();
+    
+    res.status(201).json({
+      id: scan._id,
+      repoUrl,
+      result: Object.keys(scanResults.matchesFound).length > 0 ? 'suspicious' : 'clean',
+      matchesFound: scanResults.matchesFound,
+      error: scanResults.error
+    });
+  } catch (err) {
+    console.error(`[scan] GitHub scan error: ${err.message}`);
     res.status(500).json({ error: err.message });
   }
 }
