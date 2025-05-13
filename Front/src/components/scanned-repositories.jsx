@@ -128,12 +128,22 @@ export const ScannedRepositories = forwardRef(function ScannedRepositories(props
                       {repo.status === "analyzing" && (
                         <span className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs">Analyzing</span>
                       )}
-                      {repo.status === "completed" && (
-                        <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs mr-2">Completed</span>
-                      )}
-                      {repo.result === "clean" && (
-                        <span className="px-2 py-1 bg-green-600/20 text-green-400 rounded-full text-xs">Clean</span>
-                      )}
+                      <div className="flex gap-2 items-center">
+                        {repo.status === "failed" ? (
+                          <span className="bg-red-500/10 text-red-500 text-xs px-2 py-1 rounded-full">
+                            Failed
+                          </span>
+                        ) : (
+                          <span className="bg-green-500/10 text-green-500 text-xs px-2 py-1 rounded-full">
+                            Completed
+                          </span>
+                        )}
+                        {repo.status !== "failed" && (
+                          <span className="bg-green-500/10 text-green-500 text-xs px-2 py-1 rounded-full">
+                            Clean
+                          </span>
+                        )}
+                      </div>
                       {repo.result === "suspicious" && (
                         <span className="px-2 py-1 bg-amber-600/20 text-amber-400 rounded-full text-xs">Suspicious</span>
                       )}
@@ -213,22 +223,20 @@ export const ScannedRepositories = forwardRef(function ScannedRepositories(props
               <div>
                 <h4 className="text-sm font-medium text-gray-400 mb-1">Scan Result</h4>
                 <div className="flex items-center gap-2">
-                  {selectedRepo.result === "clean" && (
+                  {selectedRepo.status === "failed" ? (
                     <>
-                      <CheckCircledIcon className="w-5 h-5 text-green-500" />
-                      <span className="text-green-400">No suspicious patterns detected</span>
+                      <ExclamationTriangleIcon className="w-5 h-5 text-red-500" />
+                      <span className="text-red-400">Scan failed</span>
                     </>
-                  )}
-                  {selectedRepo.result === "suspicious" && (
+                  ) : selectedRepo.result === "suspicious" ? (
                     <>
                       <ExclamationTriangleIcon className="w-5 h-5 text-amber-500" />
                       <span className="text-amber-400">Suspicious patterns detected</span>
                     </>
-                  )}
-                  {selectedRepo.status === "failed" && (
+                  ) : (
                     <>
-                      <ExclamationTriangleIcon className="w-5 h-5 text-red-500" />
-                      <span className="text-red-400">Scan failed</span>
+                      <CheckCircledIcon className="w-5 h-5 text-green-500" />
+                      <span className="text-green-400">No suspicious patterns detected</span>
                     </>
                   )}
                 </div>

@@ -63,6 +63,29 @@ export function GitHubScanner({ onScanSuccess }) {
       if (!response.ok) {
         toast.error("Failed to scan GitHub repository");
         setError(data.error || "Failed to scan GitHub repository");
+        
+        // Save failed scan to repository history
+        const failedScanRecord = {
+          id: Date.now().toString(),
+          repoUrl,
+          date: new Date().toISOString(),
+          result: "clean",
+          status: "failed",
+          matchesFound: {},
+          error: data.error || "Failed to scan GitHub repository"
+        };
+        
+        // Add to local storage
+        const existingRepos = JSON.parse(localStorage.getItem('scannedRepositories') || '[]');
+        const newRepos = [failedScanRecord, ...existingRepos];
+        localStorage.setItem('scannedRepositories', JSON.stringify(newRepos));
+        
+        // Update UI
+        if (scannedReposRef.current) {
+          scannedReposRef.current.refresh();
+        }
+        setRefresh(r => r + 1);
+        
         throw new Error(data.error || "Failed to scan GitHub repository");
       }
 
@@ -72,7 +95,7 @@ export function GitHubScanner({ onScanSuccess }) {
         repoUrl,
         date: new Date().toISOString(),
         result: data.result || "clean",
-        status: "completed",
+        status: data.error ? "failed" : "completed",
         matchesFound: data.matchesFound || {},
         error: data.error || null
       };
@@ -98,6 +121,30 @@ export function GitHubScanner({ onScanSuccess }) {
       setRepoUrl("");
     } catch (error) {
       console.error("Error scanning GitHub repository:", error);
+      
+      if (!error.message || !error.message.includes("Failed to scan GitHub repository")) {
+        // Save failed scan to repository history
+        const failedScanRecord = {
+          id: Date.now().toString(),
+          repoUrl,
+          date: new Date().toISOString(),
+          result: "clean",
+          status: "failed",
+          matchesFound: {},
+          error: error.message || "Error scanning GitHub repository"
+        };
+        
+        // Add to local storage
+        const existingRepos = JSON.parse(localStorage.getItem('scannedRepositories') || '[]');
+        const newRepos = [failedScanRecord, ...existingRepos];
+        localStorage.setItem('scannedRepositories', JSON.stringify(newRepos));
+        
+        // Update UI
+        if (scannedReposRef.current) {
+          scannedReposRef.current.refresh();
+        }
+        setRefresh(r => r + 1);
+      }
     } finally {
       setScanning(false);
     }
