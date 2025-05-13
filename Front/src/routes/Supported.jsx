@@ -148,7 +148,7 @@ export default function SupportedPage() {
             </section>
             <section className="bg-zinc-800/50 p-6 rounded-2xl border border-zinc-700/50">
               <h2 className="text-2xl font-semibold mb-6 text-white flex items-center">
-                <span className="p-2 bg-red-500/10 rounded-xl text-red-400 mr-3">
+                <span className="p-2 bg-indigo-500/10 rounded-xl text-indigo-400 mr-3">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 2v2" />
                     <path d="M12 20v2" />
