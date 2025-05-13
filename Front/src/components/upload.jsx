@@ -82,7 +82,7 @@ export const Upload = forwardRef(function Upload({ onUploadSuccess }, ref) {
 
   
 
-  async function handleUpload(files) {
+  async function manageUpload(files) {
     setUploading(true);
     setUploadError(null);
     setUploadSuccess(null);
@@ -131,16 +131,16 @@ export const Upload = forwardRef(function Upload({ onUploadSuccess }, ref) {
     }
   }
 
-  const handleDragOver = (e) => {
+  const manageDragOver = (e) => {
     e.preventDefault()
     setIsDragging(true)
   }
 
-  const handleDragLeave = () => {
+  const manageDragLeave = () => {
     setIsDragging(false)
   }
 
-  const handleDrop = async (e) => {
+  const manageDrop = async (e) => {
     e.preventDefault();
     setIsDragging(false);
     const files = e.dataTransfer.files;
@@ -159,7 +159,7 @@ export const Upload = forwardRef(function Upload({ onUploadSuccess }, ref) {
       return;
     }
     if (files && files.length > 0) {
-      await handleUpload(files);
+      await manageUpload(files);
     }
   }
 
@@ -191,9 +191,9 @@ export const Upload = forwardRef(function Upload({ onUploadSuccess }, ref) {
             ? "border-indigo-500 bg-zinc-800/80 shadow-lg shadow-indigo-900/20"
             : "border-zinc-700 hover:border-indigo-500/50",
         )}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
+        onDragOver={manageDragOver}
+        onDragLeave={manageDragLeave}
+        onDrop={manageDrop}
         onClick={() => document.getElementById("file-upload")?.click()}
         style={{ filter: uploading ? 'blur(2px)' : undefined, pointerEvents: uploading ? 'none' : undefined }}
       >
@@ -235,7 +235,7 @@ export const Upload = forwardRef(function Upload({ onUploadSuccess }, ref) {
                   toast.error('EXE files larger than 50MB are not allowed.');
                   return;
                 }
-                await handleUpload(e.target.files);
+                await manageUpload(e.target.files);
               }
             }}
           />

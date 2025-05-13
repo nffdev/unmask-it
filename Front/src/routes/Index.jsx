@@ -32,12 +32,12 @@ export default function Home() {
   const [url, setUrl] = useState("");
   const [urlError, setUrlError] = useState("");
 
-  const handleUrlChange = (e) => {
+  const manageUrlChange = (e) => {
     setUrl(e.target.value);
     setUrlError("");
   };
 
-  const handleUrlUpload = async () => {
+  const manageUrlUpload = async () => {
     if (!url || !uploadRef.current) return;
     if (!validateAllowedUrl(url)) {
       setUrlError("Only gofile, github, or discord links are allowed.");
@@ -86,7 +86,7 @@ export default function Home() {
                 <input
                   type="text"
                   value={url}
-                  onChange={handleUrlChange}
+                  onChange={manageUrlChange}
                   placeholder="Enter download link (GitHub/GoFile/Discord)"
                   className="w-full bg-zinc-800 border border-zinc-700 rounded-xl py-3 px-4 pr-12 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                 />
@@ -96,7 +96,7 @@ export default function Home() {
                 <button
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-white p-2 hover:text-indigo-400 transition-colors disabled:opacity-60"
                   disabled={!!urlError || !url}
-                  onClick={handleUrlUpload}
+                  onClick={manageUrlUpload}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
