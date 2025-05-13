@@ -210,25 +210,82 @@ export const UploadedFiles = forwardRef(function UploadedFiles(props, ref) {
             <p className="text-gray-500 text-sm mt-2">Upload files to start analysis</p>
           </div>
         )}
-        <DialogContent className="bg-zinc-900">
-          <DialogHeader>
-            <DialogTitle className="text-white">File details</DialogTitle>
-            <DialogDescription className="text-gray-300">
-              {selectedFile ? (
-                <div className="space-y-2 mt-2">
-                  <div><span className="text-gray-400 font-semibold">Name:</span> <span className="text-gray-200">{selectedFile.name || 'Unknown'}</span></div>
-                  <div><span className="text-gray-400 font-semibold">Type:</span> <span className="text-gray-200">{selectedFile.type || 'Unknown'}</span></div>
-                  <div><span className="text-gray-400 font-semibold">Size:</span> <span className="text-gray-200">{selectedFile.size || 'Unknown'}</span></div>
-                  <div><span className="text-gray-400 font-semibold">Status:</span> <span className="text-gray-200">{selectedFile.status || 'Unknown'}</span></div>
-                  {selectedFile.date && (
-                    <div><span className="text-gray-400 font-semibold">Date:</span> <span className="text-gray-200">{new Date(selectedFile.date).toLocaleString()}</span></div>
+        <DialogContent className="bg-zinc-900 max-w-lg">
+          <button onClick={() => setDialogOpen(false)} className="absolute right-4 top-4 rounded-sm text-gray-400 hover:text-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+          
+          {selectedFile && (
+            <div className="pt-2">
+              <div className="flex items-center gap-3 mb-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-400"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /></svg>
+                <h2 className="text-white text-xl font-medium">File Scan Results</h2>
+              </div>
+              
+              <div className="text-gray-400 mb-6 pl-9">
+                Details for {selectedFile.name || 'unknown file'}
+              </div>
+              
+              <div className="mb-5">
+                <div className="text-xs text-gray-500 mb-1">File Name</div>
+                <div className="text-gray-100">{selectedFile.name || 'Unknown'}</div>
+              </div>
+              
+              <div className="mb-5">
+                <div className="text-xs text-gray-500 mb-1">Scan Date</div>
+                <div className="text-gray-100">{selectedFile.date ? new Date(selectedFile.date).toLocaleString() : 'Unknown'}</div>
+              </div>
+              
+              <div>
+                <div className="text-xs text-gray-500 mb-1">Scan Result</div>
+                {selectedFile.result ? (
+                  <div className="flex items-center gap-2">
+                    {selectedFile.result === "clean" || (typeof selectedFile.result === 'string' && selectedFile.result.toLowerCase().includes('no suspicious')) ? (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-400"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+                        <span className="text-green-400 font-medium">No suspicious patterns detected</span>
+                      </>
+                    ) : selectedFile.result === "malicious" || selectedFile.status === "failed" ? (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-400"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                        <span className="text-red-400 font-medium">Malicious patterns detected</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-400"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                        <span className="text-yellow-400 font-medium">{typeof selectedFile.result === 'string' ? selectedFile.result : JSON.stringify(selectedFile.result, null, 2)}</span>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <span className="text-gray-400">No scan result available</span>
+                )}
+              </div>
+              
+              <div className="mt-6 pt-5 border-t border-zinc-700">
+                <div className="flex flex-wrap gap-4">
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Size</div>
+                    <div className="text-gray-300">{typeof selectedFile.size === 'number' ? (selectedFile.size / 1024 / 1024).toFixed(2) + ' MB' : selectedFile.size || 'Unknown'}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Type</div>
+                    <div className="text-gray-300">{selectedFile.type || 'Unknown'}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Status</div>
+                    <div className="text-gray-300">{selectedFile.status || 'Unknown'}</div>
+                  </div>
+                  {selectedFile.hash && (
+                    <div className="w-full">
+                      <div className="text-xs text-gray-500 mb-1">SHA256</div>
+                      <div className="text-gray-300 break-all text-xs font-mono">{selectedFile.hash}</div>
+                    </div>
                   )}
                 </div>
-              ) : (
-                <span className="text-gray-400">No file selected.</span>
-              )}
-            </DialogDescription>
-          </DialogHeader>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
