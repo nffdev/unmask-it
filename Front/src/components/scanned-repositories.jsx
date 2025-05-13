@@ -129,26 +129,22 @@ export const ScannedRepositories = forwardRef(function ScannedRepositories(props
                         <span className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs">Analyzing</span>
                       )}
                       <div className="flex gap-2 items-center">
-                        {repo.status === "failed" ? (
-                          <span className="bg-red-500/10 text-red-500 text-xs px-2 py-1 rounded-full">
-                            Failed
-                          </span>
-                        ) : (
-                          <span className="bg-green-500/10 text-green-500 text-xs px-2 py-1 rounded-full">
-                            Completed
-                          </span>
-                        )}
                         {repo.status !== "failed" && (
-                          <span className="bg-green-500/10 text-green-500 text-xs px-2 py-1 rounded-full">
-                            Clean
-                          </span>
+                          <>
+                            <span className="bg-green-500/10 text-green-500 text-xs px-2 py-1 rounded-full">
+                              Completed
+                            </span>
+                            <span className="bg-green-500/10 text-green-500 text-xs px-2 py-1 rounded-full">
+                              Clean
+                            </span>
+                          </>
+                        )}
+                        {repo.status === "failed" && (
+                          <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs mr-2">Failed</span>
                         )}
                       </div>
                       {repo.result === "suspicious" && (
                         <span className="px-2 py-1 bg-amber-600/20 text-amber-400 rounded-full text-xs">Suspicious</span>
-                      )}
-                      {repo.status === "failed" && (
-                        <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs mr-2">Failed</span>
                       )}
                     </div>
                   </div>
