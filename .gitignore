@@ -21,5 +21,12 @@ dist-ssr
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
 *.sw?
+
+.vs
+bin
+obj
+packages
+x64
+settings.json
+.vscode/settings.json
