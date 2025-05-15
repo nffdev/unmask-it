@@ -1,20 +1,64 @@
-// main.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
+#include <windows.h>
+#include <fstream> 
+#include <string>    
 #include <iostream>
+#include "MinHook.h"
 
-int main()
+typedef HANDLE(WINAPI* pCreateFileA)(
+    LPCSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE
+    );
+
+pCreateFileA originalCreateFileA = NULL;
+
+HANDLE WINAPI HookedCreateFileA(
+    LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
+    LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition,
+    DWORD dwFlagsAndAttributes, HANDLE hTemplateFile)
 {
-    std::cout << "Hello World!\n";
+    std::ofstream log("log.txt", std::ios::app);
+    log << "[CreateFileA] " << lpFileName << std::endl;
+    log.close();
+
+    return originalCreateFileA(
+        lpFileName, dwDesiredAccess, dwShareMode, lpSecurityAttributes,
+        dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile
+    );
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+void InitHooks() {
+    if (MH_Initialize() != MH_OK) return;
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+    MH_CreateHook(&CreateFileA, &HookedCreateFileA, reinterpret_cast<LPVOID*>(&originalCreateFileA));
+    MH_EnableHook(&CreateFileA);
+}
+
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        std::cout << "Usage: sandbox.exe <target_exe>" << std::endl;
+        return 1;
+    }
+
+    InitHooks();
+
+    STARTUPINFOA si = { sizeof(si) };
+    PROCESS_INFORMATION pi;
+
+    if (!CreateProcessA(
+        NULL, argv[1], NULL, NULL, FALSE,
+        CREATE_SUSPENDED, NULL, NULL, &si, &pi))
+    {
+        std::cerr << "Error while launching the exe." << std::endl;
+        return 1;
+    }
+
+    ResumeThread(pi.hThread);
+    WaitForSingleObject(pi.hProcess, INFINITE);
+
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+
+    MH_DisableHook(&CreateFileA);
+    MH_Uninitialize();
+
+    return 0;
+}
