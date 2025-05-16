@@ -14,7 +14,8 @@
 -  Automatic extraction of internal configurations
 -  Intuitive web interface with drag-and-drop support
 -  Analysis dashboard with detailed statistics
--  Github repository analysis 
+-  Github repository analysis
+-  Sandbox advanced analysis 
 
 ---
 
