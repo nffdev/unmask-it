@@ -15,7 +15,7 @@
 -  Intuitive web interface with drag-and-drop support
 -  Analysis dashboard with detailed statistics
 -  Github repository analysis
--  Sandbox advanced analysis 
+- [ ] Sandbox advanced analysis 
 
 ---
 
